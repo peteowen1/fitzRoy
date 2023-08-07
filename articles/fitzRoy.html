@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fitzRoy</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.3.0.9000</span>
       </span>
     </div>
 
@@ -102,10 +102,16 @@
   <ul class="dropdown-menu" role="menu">
 <li class="dropdown-header">Releases</li>
     <li>
-      <a href="https://plussixoneblog.com/post/2022-01-11-fitzroy-v-1-1-0/" class="external-link">fitzRoy 1.1.0</a>
+      <a href="https://www.plussixoneblog.com/posts/2023-03-02-fitzRoy-v-1-3-0/" class="external-link">fitzRoy 1.3.0</a>
     </li>
     <li>
-      <a href="https://plussixoneblog.com/post/2021-03-15-fitzroy-v-1-0-0/" class="external-link">fitzRoy 1.0.0</a>
+      <a href="https://www.plussixoneblog.com/posts/2022-09-29-fitzRoy-v-1-2-0.en.html" class="external-link">fitzRoy 1.2.0</a>
+    </li>
+    <li>
+      <a href="https://www.plussixoneblog.com/posts/2022-01-11-fitzRoy-v-1-1-0.en.html" class="external-link">fitzRoy 1.1.0</a>
+    </li>
+    <li>
+      <a href="https://www.plussixoneblog.com/posts/2021-03-15-fitzRoy-v-1-0-0.en.html" class="external-link">fitzRoy 1.0.0</a>
     </li>
     <li class="divider">
     </li>
@@ -132,7 +138,7 @@
 
       
 
-      </header><script src="fitzRoy_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Introduction to fitzRoy</h1>
@@ -145,51 +151,97 @@
 
     
     
-<p>The goal of fitzRoy is to make it easy to access data from the AFLM and AFLW competitions. It provides a simple and consistent API to access data such as match results, fixtures and player statistics from multiple data sources.</p>
+<p>The goal of fitzRoy is to make it easy to access data from the AFLM
+and AFLW competitions. It provides a simple and consistent API to access
+data such as match results, fixtures and player statistics from multiple
+data sources.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jimmyday12.github.io/fitzRoy">fitzRoy</a></span><span class="op">)</span></span></code></pre></div>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jimmyday12.github.io/fitzRoy/">fitzRoy</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="fetching-data">Fetching Data<a class="anchor" aria-label="anchor" href="#fetching-data"></a>
 </h2>
-<p>Primarily, <code>fitzRoy</code> can be used to access data from various sources using the <code>fetch_</code> functions. For a detailed view on how the API works - view the <a href="https://jimmyday12.github.io/fitzRoy/articles/main-fetch-functions.html">Main Fetch Functions</a> vignette.</p>
+<p>Primarily, <code>fitzRoy</code> can be used to access data from
+various sources using the <code>fetch_</code> functions. For a detailed
+view on how the API works - view the <a href="https://jimmyday12.github.io/fitzRoy/articles/main-fetch-functions.html">Main
+Fetch Functions</a> vignette.</p>
 </div>
 <div class="section level2">
 <h2 id="data-sources">Data Sources<a class="anchor" aria-label="anchor" href="#data-sources"></a>
 </h2>
-<p>There are 5 main data sources for data in fitzRoy. Where possible, we do not edit the data from how we receive it, although in some cases, we do need to aggregate and calculate certain fields based on the structure of the site.</p>
-<p>You can choose your data source as an argument to any <code>fetch_</code> function using the <code>source =</code> argument.</p>
+<p>There are 5 main data sources for data in fitzRoy. Where possible, we
+do not edit the data from how we receive it, although in some cases, we
+do need to aggregate and calculate certain fields based on the structure
+of the site.</p>
+<p>You can choose your data source as an argument to any
+<code>fetch_</code> function using the <code>source =</code>
+argument.</p>
 <div class="section level3">
 <h3 id="afl-website">AFL website<a class="anchor" aria-label="anchor" href="#afl-website"></a>
 </h3>
-<p>We provide data from the (AFL website)[<a href="https://www.afl.com.au/" class="external-link uri">https://www.afl.com.au/</a>] as the default to any <code>fetch_</code> function. This data is from the official AFL data provider. With this data, we can return data for both the Mens and Womens competitions. The oldest data is from 2012. It provides access to all data types including results, fixtures, ladders, lineups and stats.</p>
+<p>We provide data from the (AFL website)[<a href="https://www.afl.com.au/" class="external-link uri">https://www.afl.com.au/</a>]
+as the default to any <code>fetch_</code> function. This data is from
+the official AFL data provider. With this data, we can return data for
+both the Mens and Womens competitions. The oldest data is from 2012. It
+provides access to all data types including results, fixtures, ladders,
+lineups and stats.</p>
 </div>
 <div class="section level3">
 <h3 id="afl-tables">AFL tables<a class="anchor" aria-label="anchor" href="#afl-tables"></a>
 </h3>
-<p><a href="https://afltables.com/afl/afl_index.html" class="external-link">AFL Tables</a> has historically been the main source of data in fitzRoy. It is the most complete source of data about AFL that exists (to our knowledge at least!). It contains data from 1897 and is the only data source included in fitzRoy with such historical data. The types of data it contains are results, ladders and stats.</p>
+<p><a href="https://afltables.com/afl/afl_index.html" class="external-link">AFL Tables</a> has
+historically been the main source of data in fitzRoy. It is the most
+complete source of data about AFL that exists (to our knowledge at
+least!). It contains data from 1897 and is the only data source included
+in fitzRoy with such historical data. The types of data it contains are
+results, ladders and stats.</p>
 </div>
 <div class="section level3">
 <h3 id="footywire">Footywire<a class="anchor" aria-label="anchor" href="#footywire"></a>
 </h3>
-<p><a href="https://www.footywire.com/" class="external-link">Footywire</a> has traditionally been the main source of player statistics in fitzRoy. It contains data dating back to 2012 and was generally used as a supplement to AFL Tables data. The types of data it returns are results, fixtures and statistics.</p>
+<p><a href="https://www.footywire.com/" class="external-link">Footywire</a> has traditionally
+been the main source of player statistics in fitzRoy. It contains data
+dating back to 2012 and was generally used as a supplement to AFL Tables
+data. The types of data it returns are results, fixtures and
+statistics.</p>
 </div>
 <div class="section level3">
 <h3 id="squiggle">Squiggle<a class="anchor" aria-label="anchor" href="#squiggle"></a>
 </h3>
-<p><a href="https://squiggle.com.au/" class="external-link">Squiggle</a> is a famous AFL Prediction and Analysis website run by <a href="https://twitter.com/squiggleafl?lang=en" class="external-link">Max Barry</a>. In recent years, Squiggle has become the main place to aggregate various predictive models. Max has provided a nice and well documented <a href="https://api.squiggle.com.au/" class="external-link">API</a> that fitzRoy uses to return data. Helper functions included in the <code>fetch_</code> family will return results, fixtures and ladders but the <code>fetch_squiggle_data</code> function provides direct access to the API. Read the <a href="https://jimmyday12.github.io/fitzRoy/articles/using-squiggle-api.html">Squiggle API vignette</a> for more details.</p>
+<p><a href="https://squiggle.com.au/" class="external-link">Squiggle</a> is a famous AFL
+Prediction and Analysis website run by <a href="https://twitter.com/squiggleafl?lang=en" class="external-link">Max Barry</a>. In recent
+years, Squiggle has become the main place to aggregate various
+predictive models. Max has provided a nice and well documented <a href="https://api.squiggle.com.au/" class="external-link">API</a> that fitzRoy uses to return
+data. Helper functions included in the <code>fetch_</code> family will
+return results, fixtures and ladders but the
+<code>fetch_squiggle_data</code> function provides direct access to the
+API. Read the <a href="https://jimmyday12.github.io/fitzRoy/articles/using-squiggle-api.html">Squiggle
+API vignette</a> for more details.</p>
 </div>
 <div class="section level3">
 <h3 id="fryzigg">Fryzigg<a class="anchor" aria-label="anchor" href="#fryzigg"></a>
 </h3>
-<p>Twitter user <a href="https://twitter.com/fryzigg?lang=en" class="external-link">Fryzigg</a> has provided access to some advanced player statistics. These are included in the <code>fetch_player_stats</code> function. Read the <a href="https://jimmyday12.github.io/fitzRoy/articles/using-fryzigg-stats.html">Fryzigg API vignette</a> for more information.</p>
+<p>Twitter user <a href="https://twitter.com/fryzigg?lang=en" class="external-link">Fryzigg</a> has provided
+access to some advanced player statistics. These are included in the
+<code>fetch_player_stats</code> function. Read the <a href="https://jimmyday12.github.io/fitzRoy/articles/using-fryzigg-stats.html">Fryzigg
+API vignette</a> for more information.</p>
 </div>
 </div>
 <div class="section level2">
 <h2 id="good-practices">Good practices<a class="anchor" aria-label="anchor" href="#good-practices"></a>
 </h2>
-<p>In most cases, trying to use the same source for all of your analysis will be most beneficial. This is not always possible as some sources only go back so far (the AFL website only has data back to 2011), while some data is not available (AFL Tables doesn’t have decent fixture data). If you are mixing sources, be careful to understand differences in naming structures, team names and player names.</p>
-<p>It is also a good idea to avoid regularly fetching whole datasets. Where possible, try to keep an off-line version of your data and only request the smallest amount possible to get the new data you require. This is both faster (less data transferred over your Internet connection and less data living in your computer memory) but also helps to reduce traffic on the data providers servers.</p>
+<p>In most cases, trying to use the same source for all of your analysis
+will be most beneficial. This is not always possible as some sources
+only go back so far (the AFL website only has data back to 2011), while
+some data is not available (AFL Tables doesn’t have decent fixture
+data). If you are mixing sources, be careful to understand differences
+in naming structures, team names and player names.</p>
+<p>It is also a good idea to avoid regularly fetching whole datasets.
+Where possible, try to keep an off-line version of your data and only
+request the smallest amount possible to get the new data you require.
+This is both faster (less data transferred over your Internet connection
+and less data living in your computer memory) but also helps to reduce
+traffic on the data providers servers.</p>
 </div>
 <div class="section level2">
 <h2 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a>
@@ -197,7 +249,10 @@
 <div class="section level3">
 <h3 id="fixture">Fixture<a class="anchor" aria-label="anchor" href="#fixture"></a>
 </h3>
-<p>Fixture data is available from multiple places. The most reliable and complete data usually comes from the AFL website. From that website you can specify either the Mens or Womens competitions using the <code>comp</code> argument.</p>
+<p>Fixture data is available from multiple places. The most reliable and
+complete data usually comes from the AFL website. From that website you
+can specify either the Mens or Womens competitions using the
+<code>comp</code> argument.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fixture</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fetch_fixture.html">fetch_fixture</a></span><span class="op">(</span><span class="fl">2021</span>, comp <span class="op">=</span> <span class="st">"AFLW"</span><span class="op">)</span></span>
 <span><span class="va">fixture</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -216,7 +271,7 @@
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> 2021-02-05T08:45:00.000+… Round 2    Western Bulld… Carlton        Victoria …</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> 2021-02-06T04:10:00.000+… Round 2    Collingwood    Geelong Cats   Victoria …</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> 2021-02-06T06:10:00.000+… Round 2    Melbourne      Richmond       Casey Fie…</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># … with 58 more rows</span></span></span></code></pre>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 58 more rows</span></span></span></code></pre>
 <p>If wanted, you could return just a single round.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/fetch_fixture.html">fetch_fixture</a></span><span class="op">(</span><span class="fl">2021</span>, round_number <span class="op">=</span> <span class="fl">5</span>, comp <span class="op">=</span> <span class="st">"AFLM"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -234,7 +289,9 @@
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">7</span> 2021-04-18T03:10:00.000+0… Round 5    Adelaide Crows Fremantle      Adelaide …</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">8</span> 2021-04-18T05:20:00.000+0… Round 5    Hawthorn       Melbourne      MCG       </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">9</span> 2021-04-18T06:40:00.000+0… Round 5    Geelong Cats   North Melbour… GMHBA Sta…</span></span></code></pre>
-<p>You can get results data from other sources including <code>Squiggle</code> and <code>Footywire</code>. The default source for <code><a href="../reference/fetch_results.html">fetch_results()</a></code> is the AFL.com.au website.</p>
+<p>You can get results data from other sources including
+<code>Squiggle</code> and <code>Footywire</code>. The default source for
+<code><a href="../reference/fetch_results.html">fetch_results()</a></code> is the AFL.com.au website.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fixture_afl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fetch_fixture.html">fetch_fixture</a></span><span class="op">(</span><span class="fl">2020</span><span class="op">)</span></span>
 <span><span class="va">fixture_aflw</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fetch_fixture.html">fetch_fixture</a></span><span class="op">(</span><span class="fl">2020</span>, round_number <span class="op">=</span> <span class="fl">1</span>, comp <span class="op">=</span> <span class="st">"AFLW"</span><span class="op">)</span></span>
@@ -244,7 +301,9 @@
 <div class="section level3">
 <h3 id="lineup">Lineup<a class="anchor" aria-label="anchor" href="#lineup"></a>
 </h3>
-<p>You can get the lineup for a particular round. This is usually useful when running after the teams have been announced but before the match has been played.</p>
+<p>You can get the lineup for a particular round. This is usually useful
+when running after the teams have been announced but before the match
+has been played.</p>
 <p>The only data source with lineup data is the AFL.com.au website.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/fetch_lineup.html">fetch_lineup</a></span><span class="op">(</span><span class="fl">2021</span>, round_number <span class="op">=</span> <span class="fl">1</span>, comp <span class="op">=</span> <span class="st">"AFLW"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -252,24 +311,28 @@
 <span>         <span class="va">player.playerName.givenName</span>,</span>
 <span>         <span class="va">player.playerName.surname</span>, <span class="va">teamStatus</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 294 × 6</span></span></span>
-<span><span class="co">#&gt;    round.name status    teamName player.playerName.… player.playerNa… teamStatus</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> Round 1    CONCLUDED Carlton  Brooke              Vernon           FINAL_TEAM</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> Round 1    CONCLUDED Carlton  Natalie             Plane            FINAL_TEAM</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> Round 1    CONCLUDED Carlton  Vaomua              Laloifi          FINAL_TEAM</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> Round 1    CONCLUDED Carlton  Charlotte           Wilson           FINAL_TEAM</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> Round 1    CONCLUDED Carlton  Kerryn              Harrington       FINAL_TEAM</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> Round 1    CONCLUDED Carlton  Lauren              Brazzale         FINAL_TEAM</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> Round 1    CONCLUDED Carlton  Elise               O'Dea            FINAL_TEAM</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> Round 1    CONCLUDED Carlton  Katie               Loynes           FINAL_TEAM</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> Round 1    CONCLUDED Carlton  Abbie               McKay            FINAL_TEAM</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> Round 1    CONCLUDED Carlton  Tayla               Harris           FINAL_TEAM</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># … with 284 more rows</span></span></span></code></pre>
+<span><span class="co">#&gt;    round.name status    teamName player.playerName.give…¹ player.playerName.su…²</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> Round 1    CONCLUDED Carlton  Brooke                   Vernon                </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> Round 1    CONCLUDED Carlton  Natalie                  Plane                 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> Round 1    CONCLUDED Carlton  Vaomua                   Laloifi               </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> Round 1    CONCLUDED Carlton  Charlotte                Wilson                </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> Round 1    CONCLUDED Carlton  Kerryn                   Harrington            </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> Round 1    CONCLUDED Carlton  Lauren                   Brazzale              </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> Round 1    CONCLUDED Carlton  Elise                    O'Dea                 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> Round 1    CONCLUDED Carlton  Katie                    Loynes                </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> Round 1    CONCLUDED Carlton  Abbie                    McKay                 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> Round 1    CONCLUDED Carlton  Tayla                    Harris                </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 284 more rows</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ abbreviated names: ¹​player.playerName.givenName, ²​player.playerName.surname</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 1 more variable: teamStatus &lt;chr&gt;</span></span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="results">Results<a class="anchor" aria-label="anchor" href="#results"></a>
 </h3>
-<p>You can access AFL match results data from various sources. The most complete is the <a href="http://www.afltables.com" class="external-link">AFL Tables</a> data, which includes all matches from 1897-current.</p>
+<p>You can access AFL match results data from various sources. The most
+complete is the <a href="https://afltables.com/afl/afl_index.html" class="external-link">AFL
+Tables</a> data, which includes all matches from 1897-current.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">fetch_match_results_afltables</span><span class="op">(</span><span class="fl">1897</span><span class="op">:</span><span class="fl">2019</span><span class="op">)</span></span>
 <span><span class="va">results</span></span></code></pre></div>
@@ -286,13 +349,17 @@
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>     8 1897-05-15 R2    Melbourne            9           10          64</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>     9 1897-05-22 R3    Collingwood          6            5          41</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>    10 1897-05-22 R3    Fitzroy              5            9          39</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># … with 15,604 more rows, and 9 more variables: Away.Team &lt;chr&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   Away.Goals &lt;int&gt;, Away.Behinds &lt;int&gt;, Away.Points &lt;int&gt;, Venue &lt;chr&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   Margin &lt;int&gt;, Season &lt;dbl&gt;, Round.Type &lt;chr&gt;, Round.Number &lt;int&gt;</span></span></span></code></pre>
-<p>While it is possible to return all historical data, it is usually good practice to only return a small amount of data - such as a single season or round - and keep your own offline database of historical data.</p>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 15,604 more rows</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 9 more variables: Away.Team &lt;chr&gt;, Away.Goals &lt;int&gt;, Away.Behinds &lt;int&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   Away.Points &lt;int&gt;, Venue &lt;chr&gt;, Margin &lt;int&gt;, Season &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   Round.Type &lt;chr&gt;, Round.Number &lt;int&gt;</span></span></span></code></pre>
+<p>While it is possible to return all historical data, it is usually
+good practice to only return a small amount of data - such as a single
+season or round - and keep your own offline database of historical
+data.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">results_new</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fetch_results.html">fetch_results_afltables</a></span><span class="op">(</span><span class="fl">2021</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">results</span>, <span class="va">results_new</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">results</span>, <span class="va">results_new</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 15,983 × 16</span></span></span>
 <span><span class="co">#&gt;     Game Date       Round Home.Team   Home.Goals Home.Behinds Home.Points</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
@@ -306,10 +373,14 @@
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>     8 1897-05-15 R2    Melbourne            9           10          64</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>     9 1897-05-22 R3    Collingwood          6            5          41</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>    10 1897-05-22 R3    Fitzroy              5            9          39</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># … with 15,973 more rows, and 9 more variables: Away.Team &lt;chr&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   Away.Goals &lt;int&gt;, Away.Behinds &lt;int&gt;, Away.Points &lt;int&gt;, Venue &lt;chr&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   Margin &lt;int&gt;, Season &lt;dbl&gt;, Round.Type &lt;chr&gt;, Round.Number &lt;int&gt;</span></span></span></code></pre>
-<p>You can get results data from other sources including <code>AFL</code>, <code>Squiggle</code> and <code>Footywire</code>. The default source for <code><a href="../reference/fetch_results.html">fetch_results()</a></code> is the AFL.com.au website.</p>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 15,973 more rows</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 9 more variables: Away.Team &lt;chr&gt;, Away.Goals &lt;int&gt;, Away.Behinds &lt;int&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   Away.Points &lt;int&gt;, Venue &lt;chr&gt;, Margin &lt;int&gt;, Season &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   Round.Type &lt;chr&gt;, Round.Number &lt;int&gt;</span></span></span></code></pre>
+<p>You can get results data from other sources including
+<code>AFL</code>, <code>Squiggle</code> and <code>Footywire</code>. The
+default source for <code><a href="../reference/fetch_results.html">fetch_results()</a></code> is the AFL.com.au
+website.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">results_afl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fetch_results.html">fetch_results</a></span><span class="op">(</span><span class="fl">2020</span>, round_number <span class="op">=</span> <span class="fl">11</span><span class="op">)</span></span>
 <span><span class="va">results_aflw</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fetch_results.html">fetch_results</a></span><span class="op">(</span><span class="fl">2020</span>, comp <span class="op">=</span> <span class="st">"AFLW"</span><span class="op">)</span></span>
@@ -322,24 +393,29 @@
 <span>         <span class="va">homeTeamScore.matchScore.totalScore</span>,</span>
 <span>         <span class="va">awayTeamScore.matchScore.totalScore</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 46 × 5</span></span></span>
-<span><span class="co">#&gt;    match.name            venue.name round.name homeTeamScore.m… awayTeamScore.m…</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> Richmond Vs Carlton   Ikon Park  Round 1                  14               48</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> GWS Giants Vs Gold C… Blacktown… Round 1                   9                8</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> Melbourne Vs Kangaro… Casey Fie… Round 1                  22               20</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> Brisbane Lions Vs Ad… Hickey Pa… Round 1                  34               21</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> Collingwood Vs West … Victoria … Round 1                  38               11</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> St Kilda Vs Western … RSEA Park  Round 1                  14               39</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> Fremantle Vs Geelong… Fremantle… Round 1                  44               28</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> Western Bulldogs Vs … Victoria … Round 2                  12               32</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> Kangaroos Vs GWS Gia… Universit… Round 2                  37               19</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> Gold Coast Suns Vs R… Metricon … Round 2                  33               22</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># … with 36 more rows</span></span></span></code></pre>
+<span><span class="co">#&gt;    match.name                       venue.name round.name homeTeamScore.matchS…¹</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> Richmond Vs Carlton              Ikon Park  Round 1                        14</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> GWS Giants Vs Gold Coast Suns    Blacktown… Round 1                         9</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> Melbourne Vs Kangaroos           Casey Fie… Round 1                        22</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> Brisbane Lions Vs Adelaide Crows Hickey Pa… Round 1                        34</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> Collingwood Vs West Coast Eagles Victoria … Round 1                        38</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> St Kilda Vs Western Bulldogs     RSEA Park  Round 1                        14</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> Fremantle Vs Geelong Cats        Fremantle… Round 1                        44</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> Western Bulldogs Vs Melbourne    Victoria … Round 2                        12</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> Kangaroos Vs GWS Giants          Universit… Round 2                        37</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> Gold Coast Suns Vs Richmond      Metricon … Round 2                        33</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 36 more rows</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ abbreviated name: ¹​homeTeamScore.matchScore.totalScore</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 1 more variable: awayTeamScore.matchScore.totalScore &lt;int&gt;</span></span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="ladder">Ladder<a class="anchor" aria-label="anchor" href="#ladder"></a>
 </h3>
-<p>The ladder for a particular round can be returned using <code>fetch_ladder</code>. Usually this only makes sense to return for one round at a time, although it is possible to return multiple rounds.</p>
+<p>The ladder for a particular round can be returned using
+<code>fetch_ladder</code>. Usually this only makes sense to return for
+one round at a time, although it is possible to return multiple
+rounds.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ladder</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fetch_ladder.html">fetch_ladder</a></span><span class="op">(</span><span class="fl">2020</span>, round_number <span class="op">=</span> <span class="fl">7</span>, comp <span class="op">=</span> <span class="st">"AFLW"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">season</span>, <span class="va">round_name</span>, <span class="va">position</span>, </span>
@@ -367,7 +443,9 @@
 <code class="sourceCode R"><span><span class="va">ladder</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fetch_ladder.html">fetch_ladder</a></span><span class="op">(</span><span class="fl">2020</span>, round_number <span class="op">=</span> <span class="fl">7</span>, comp <span class="op">=</span> <span class="st">"AFLW"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">ladder</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; [1] 86</span></span></code></pre>
-<p>You can get ladder data from other sources including <code>Squiggle</code> and <code>Afltables</code>. The default source for <code><a href="../reference/fetch_ladder.html">fetch_ladder()</a></code> is the AFL.com.au website.</p>
+<p>You can get ladder data from other sources including
+<code>Squiggle</code> and <code>Afltables</code>. The default source for
+<code><a href="../reference/fetch_ladder.html">fetch_ladder()</a></code> is the AFL.com.au website.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ladder_afl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fetch_ladder.html">fetch_ladder</a></span><span class="op">(</span><span class="fl">2020</span>, round_number <span class="op">=</span> <span class="fl">11</span><span class="op">)</span></span>
 <span><span class="va">ladder_aflw</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fetch_ladder.html">fetch_ladder</a></span><span class="op">(</span><span class="fl">2020</span>, comp <span class="op">=</span> <span class="st">"AFLW"</span><span class="op">)</span></span>
@@ -377,30 +455,32 @@
 <div class="section level3">
 <h3 id="stats">Stats<a class="anchor" aria-label="anchor" href="#stats"></a>
 </h3>
-<p>We can return player statistics for a set of matches. The exact stats that are included varies quite a bit between data sources.</p>
-<p>The default is again the AFL.com.au which is fairly comprehensive.</p>
+<p>We can return player statistics for a set of matches. The exact stats
+that are included varies quite a bit between data sources.</p>
+<p>The default is again the AFL.com.au which is fairly
+comprehensive.</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/fetch_player_stats.html">fetch_player_stats</a></span><span class="op">(</span><span class="fl">2020</span>, comp <span class="op">=</span> <span class="st">"AFLW"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1,932 × 68</span></span></span>
-<span><span class="co">#&gt;    providerId   utcStartTime status compSeason.shor… round.name round.roundNumb…</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> CD_M2020264… 2020-02-07T… CONCL… 2020 AFL Womens  Round 1                   1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> CD_M2020264… 2020-02-07T… CONCL… 2020 AFL Womens  Round 1                   1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> CD_M2020264… 2020-02-07T… CONCL… 2020 AFL Womens  Round 1                   1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> CD_M2020264… 2020-02-07T… CONCL… 2020 AFL Womens  Round 1                   1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> CD_M2020264… 2020-02-07T… CONCL… 2020 AFL Womens  Round 1                   1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> CD_M2020264… 2020-02-07T… CONCL… 2020 AFL Womens  Round 1                   1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> CD_M2020264… 2020-02-07T… CONCL… 2020 AFL Womens  Round 1                   1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> CD_M2020264… 2020-02-07T… CONCL… 2020 AFL Womens  Round 1                   1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> CD_M2020264… 2020-02-07T… CONCL… 2020 AFL Womens  Round 1                   1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> CD_M2020264… 2020-02-07T… CONCL… 2020 AFL Womens  Round 1                   1</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># … with 1,922 more rows, and 62 more variables: venue.name &lt;chr&gt;,</span></span></span>
+<span><span class="co">#&gt;    providerId      utcStartTime           status compSeason.shortName round.name</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> CD_M20202640101 2020-02-07T08:45:00.0… CONCL… 2020 AFL Womens      Round 1   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> CD_M20202640101 2020-02-07T08:45:00.0… CONCL… 2020 AFL Womens      Round 1   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> CD_M20202640101 2020-02-07T08:45:00.0… CONCL… 2020 AFL Womens      Round 1   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> CD_M20202640101 2020-02-07T08:45:00.0… CONCL… 2020 AFL Womens      Round 1   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> CD_M20202640101 2020-02-07T08:45:00.0… CONCL… 2020 AFL Womens      Round 1   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> CD_M20202640101 2020-02-07T08:45:00.0… CONCL… 2020 AFL Womens      Round 1   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> CD_M20202640101 2020-02-07T08:45:00.0… CONCL… 2020 AFL Womens      Round 1   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> CD_M20202640101 2020-02-07T08:45:00.0… CONCL… 2020 AFL Womens      Round 1   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> CD_M20202640101 2020-02-07T08:45:00.0… CONCL… 2020 AFL Womens      Round 1   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> CD_M20202640101 2020-02-07T08:45:00.0… CONCL… 2020 AFL Womens      Round 1   </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 1,922 more rows</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 63 more variables: round.roundNumber &lt;int&gt;, venue.name &lt;chr&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   home.team.club.name &lt;chr&gt;, away.team.club.name &lt;chr&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   player.jumperNumber &lt;int&gt;, player.photoURL &lt;chr&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   player.player.position &lt;chr&gt;, player.player.player.playerId &lt;chr&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   player.player.player.captain &lt;lgl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   player.player.player.playerJumperNumber &lt;int&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   player.player.player.givenName &lt;chr&gt;, player.player.player.surname &lt;chr&gt;, …</span></span></span></code></pre>
+<span><span class="co">#&gt; <span style="color: #949494;">#   player.player.player.playerJumperNumber &lt;int&gt;, …</span></span></span></code></pre>
 <p>We also have detailed player stats courtesy of Fryzigg.</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/fetch_player_stats.html">fetch_player_stats</a></span><span class="op">(</span><span class="fl">2019</span>, source <span class="op">=</span> <span class="st">"fryzigg"</span><span class="op">)</span></span></code></pre></div>
@@ -417,13 +497,13 @@
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> MCG           <span style="text-decoration: underline;">15</span>408 Carlton         Richmond        2019-03-21</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> MCG           <span style="text-decoration: underline;">15</span>408 Carlton         Richmond        2019-03-21</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> MCG           <span style="text-decoration: underline;">15</span>408 Carlton         Richmond        2019-03-21</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># … with 9,098 more rows, and 76 more variables: match_local_time &lt;chr&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   match_attendance &lt;int&gt;, match_round &lt;chr&gt;, match_home_team_goals &lt;int&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 9,098 more rows</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 76 more variables: match_local_time &lt;chr&gt;, match_attendance &lt;int&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   match_round &lt;chr&gt;, match_home_team_goals &lt;int&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   match_home_team_behinds &lt;int&gt;, match_home_team_score &lt;int&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   match_away_team_goals &lt;int&gt;, match_away_team_behinds &lt;int&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   match_away_team_score &lt;int&gt;, match_margin &lt;int&gt;, match_winner &lt;chr&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   match_weather_temp_c &lt;int&gt;, match_weather_type &lt;chr&gt;, player_id &lt;int&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   player_first_name &lt;chr&gt;, player_last_name &lt;chr&gt;, player_height_cm &lt;int&gt;, …</span></span></span></code></pre>
+<span><span class="co">#&gt; <span style="color: #949494;">#   match_weather_temp_c &lt;int&gt;, match_weather_type &lt;chr&gt;, player_id &lt;int&gt;, …</span></span></span></code></pre>
 <p>Other providers include Afltables and Footywire.</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">stats_afl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fetch_player_stats.html">fetch_player_stats</a></span><span class="op">(</span><span class="fl">2020</span>, round_number <span class="op">=</span> <span class="fl">11</span><span class="op">)</span></span>
@@ -434,10 +514,13 @@
 <div class="section level3">
 <h3 id="apis">API’s<a class="anchor" aria-label="anchor" href="#apis"></a>
 </h3>
-<p>You can view how to return data from two providers using their API’s at the respective Vignettes.</p>
+<p>You can view how to return data from two providers using their API’s
+at the respective Vignettes.</p>
 <ul>
-<li><a href="https://jimmyday12.github.io/fitzRoy/articles/using-squiggle-api.html">Using the Squiggle API</a></li>
-<li><a href="https://jimmyday12.github.io/fitzRoy/articles/using-fryzigg-stats.html">Using the Fryzigg API</a></li>
+<li><a href="https://jimmyday12.github.io/fitzRoy/articles/using-squiggle-api.html">Using
+the Squiggle API</a></li>
+<li><a href="https://jimmyday12.github.io/fitzRoy/articles/using-fryzigg-stats.html">Using
+the Fryzigg API</a></li>
 </ul>
 </div>
 </div>
@@ -460,7 +543,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

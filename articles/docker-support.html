@@ -39,7 +39,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fitzRoy</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.3.0.9000</span>
       </span>
     </div>
 
@@ -101,10 +101,16 @@
   <ul class="dropdown-menu" role="menu">
 <li class="dropdown-header">Releases</li>
     <li>
-      <a href="https://plussixoneblog.com/post/2022-01-11-fitzroy-v-1-1-0/" class="external-link">fitzRoy 1.1.0</a>
+      <a href="https://www.plussixoneblog.com/posts/2023-03-02-fitzRoy-v-1-3-0/" class="external-link">fitzRoy 1.3.0</a>
     </li>
     <li>
-      <a href="https://plussixoneblog.com/post/2021-03-15-fitzroy-v-1-0-0/" class="external-link">fitzRoy 1.0.0</a>
+      <a href="https://www.plussixoneblog.com/posts/2022-09-29-fitzRoy-v-1-2-0.en.html" class="external-link">fitzRoy 1.2.0</a>
+    </li>
+    <li>
+      <a href="https://www.plussixoneblog.com/posts/2022-01-11-fitzRoy-v-1-1-0.en.html" class="external-link">fitzRoy 1.1.0</a>
+    </li>
+    <li>
+      <a href="https://www.plussixoneblog.com/posts/2021-03-15-fitzRoy-v-1-0-0.en.html" class="external-link">fitzRoy 1.0.0</a>
     </li>
     <li class="divider">
     </li>
@@ -131,7 +137,7 @@
 
       
 
-      </header><script src="docker-support_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Docker Support</h1>
@@ -145,39 +151,33 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jimmyday12.github.io/fitzRoy">fitzRoy</a></span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jimmyday12.github.io/fitzRoy/">fitzRoy</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="docker-support">Docker Support<a class="anchor" aria-label="anchor" href="#docker-support"></a>
 </h2>
-<p>fitzRoy now provides <a href="https://www.docker.com/get-started" class="external-link">Docker</a> support in the form of an image hosted on <a href="https://hub.docker.com/r/jimmyday12/fitzroy/" class="external-link">DockerHub</a>.</p>
-<div class="section level3">
-<h3 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
-</h3>
-<p>Once you have the images, (e.g. <code>docker pull jimmyday12/fitzroy:latest</code>) run one of the following commands.</p>
+<p><strong>Building the Docker Image</strong></p>
+<p>To build the Docker image run the following from the root of the
+repository.</p>
 <ul>
-<li>To start <a href="https://www.rstudio.com/" class="external-link">RStudio</a> with Fitzroy ready to use:
+<li><code>docker build -t jimmyday12/fitzroy:latest -f docker/rstudio/Dockerfile .</code></li>
+<li>To start <a href="https://posit.co/" class="external-link">RStudio</a> with Fitzroy ready
+to use:
 <ul>
 <li>
-<code>docker run -d -p 8787:8787 --name fitzroy jimmyday12/fitzroy:latest</code> and open <code>http://localhost:8787</code>. *(Username: <code>rstudio</code>, Password: <code>rstudio</code>)</li>
+<code>docker run -d -p 8787:8787 -e PASSWORD={YOUR PASSWORD} --name fitzroy jimmyday12/fitzroy:latest</code>
+and open <code>http://localhost:8787</code>. *(Username:
+<code>rstudio</code>, Password: <code>{YOUR PASSWORD}</code>)</li>
 </ul>
 </li>
 <li>To start an R terminal prompt with fitzRoy ready to use:
 <ul>
 <li>
-<code>docker run -it jimmyday12/fitzroy:latest R</code> to start with an R terminal prompt.</li>
+<code>docker run -it jimmyday12/fitzroy:latest R</code> to start
+with an R terminal prompt.</li>
 <li>Run <code><a href="https://rdrr.io/r/base/quit.html" class="external-link">quit()</a></code> to exit the container</li>
 </ul>
 </li>
 </ul>
-</div>
-<div class="section level3">
-<h3 id="building-the-image-locally">Building the image locally<a class="anchor" aria-label="anchor" href="#building-the-image-locally"></a>
-</h3>
-<p>To build the Docker image run the following from the root of the repository.</p>
-<ul>
-<li><code>docker build -t jimmyday12/fitzroy:latest -f docker/rstudio/Dockerfile .</code></li>
-</ul>
-</div>
 </div>
   </div>
 
@@ -198,7 +198,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

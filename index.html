@@ -39,7 +39,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">fitzRoy</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.3.0.9000</span>
       </span>
     </div>
 
@@ -101,10 +101,16 @@
   <ul class="dropdown-menu" role="menu">
 <li class="dropdown-header">Releases</li>
     <li>
-      <a href="https://plussixoneblog.com/post/2022-01-11-fitzroy-v-1-1-0/" class="external-link">fitzRoy 1.1.0</a>
+      <a href="https://www.plussixoneblog.com/posts/2023-03-02-fitzRoy-v-1-3-0/" class="external-link">fitzRoy 1.3.0</a>
     </li>
     <li>
-      <a href="https://plussixoneblog.com/post/2021-03-15-fitzroy-v-1-0-0/" class="external-link">fitzRoy 1.0.0</a>
+      <a href="https://www.plussixoneblog.com/posts/2022-09-29-fitzRoy-v-1-2-0.en.html" class="external-link">fitzRoy 1.2.0</a>
+    </li>
+    <li>
+      <a href="https://www.plussixoneblog.com/posts/2022-01-11-fitzRoy-v-1-1-0.en.html" class="external-link">fitzRoy 1.1.0</a>
+    </li>
+    <li>
+      <a href="https://www.plussixoneblog.com/posts/2021-03-15-fitzRoy-v-1-0-0.en.html" class="external-link">fitzRoy 1.0.0</a>
     </li>
     <li class="divider">
     </li>
@@ -137,6 +143,8 @@
 <div class="page-header"><h1 id="fitzroy-">fitzRoy <img src="reference/figures/fitz_hex.png" align="right" width="120" height="139"><a class="anchor" aria-label="anchor" href="#fitzroy-"></a>
 </h1></div>
 <!-- badges: start -->
+
+<!-- badges: end -->
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
@@ -175,6 +183,16 @@
 <span><span class="fu"><a href="reference/fetch_results.html">fetch_results</a></span><span class="op">(</span>season <span class="op">=</span> <span class="fl">2020</span>, comp <span class="op">=</span> <span class="st">"AFLW"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/fetch_ladder.html">fetch_ladder</a></span><span class="op">(</span>season <span class="op">=</span> <span class="fl">2020</span>, comp <span class="op">=</span> <span class="st">"AFLW"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/get_aflw_match_data.html">get_aflw_match_data</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="non-afl-data">Non-AFL data<a class="anchor" aria-label="anchor" href="#non-afl-data"></a>
+</h3>
+<p>An experimental feature as of version 1.2.0 is returning non-AFL related data. This only works for the source <code>AFL</code> but there are other comps that are available. These comps do not have as much data as the AFLM and AFLW comps but some functions will work.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/fetch_fixture.html">fetch_fixture</a></span><span class="op">(</span><span class="fl">2022</span>, source <span class="op">=</span> <span class="st">"AFL"</span>, comp <span class="op">=</span> <span class="st">"VFL"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/fetch_player_stats.html">fetch_player_stats</a></span><span class="op">(</span><span class="fl">2022</span>, round <span class="op">=</span> <span class="fl">1</span>, source <span class="op">=</span> <span class="st">"AFL"</span>, comp <span class="op">=</span> <span class="st">"VFLW"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/fetch_fixture.html">fetch_fixture</a></span><span class="op">(</span><span class="fl">2022</span>, source <span class="op">=</span> <span class="st">"AFL"</span>, comp <span class="op">=</span> <span class="st">"WAFL"</span><span class="op">)</span></span></code></pre></div>
+<p>Available comps include * “VFL” * “VFLW” * “WAFL” * “U18B” * “U18G”</p>
 <hr>
 <p>Please note that the ‘fitzRoy’ project is released with a <a href="https://jimmyday12.github.io/fitzRoy/CODE_OF_CONDUCT.html">Contributor Code of Conduct</a>. By contributing to this project, you agree to abide by its terms.</p>
 </div>
@@ -228,10 +246,10 @@
 <div class="dev-status">
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/jimmyday12/fitzRoy/actions" class="external-link"><img src="https://github.com/jimmyday12/fitzRoy/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
-<li><a href="https://codecov.io/github/jimmyday12/FitzRoy?branch=master" class="external-link"><img src="https://codecov.io/gh/jimmyday12/FitzRoy/branch/master/graph/badge.svg" alt="Coverage status"></a></li>
+<li><a href="https://lifecycle.r-lib.org/articles/stages.html#stable" class="external-link"><img src="https://img.shields.io/badge/lifecycle-stable-brightgreen.svg" alt="Lifecycle: stable"></a></li>
+<li><a href="https://github.com/jimmyday12/fitzRoy/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/jimmyday12/fitzRoy/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://app.codecov.io/gh/jimmyday12/fitzRoy?branch=main" class="external-link"><img src="https://codecov.io/gh/jimmyday12/fitzRoy/branch/main/graph/badge.svg" alt="Codecov test coverage"></a></li>
 <li><a href="https://CRAN.R-project.org/package=fitzRoy" class="external-link"><img src="https://www.r-pkg.org/badges/version/fitzRoy" alt="CRAN status"></a></li>
-<li><a href="http://www.repostatus.org/#active" class="external-link"><img src="http://www.repostatus.org/badges/latest/active.svg" alt="Project Status"></a></li>
 <li><a href="https://www.r-pkg.org/pkg/fitzRoy" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/fitzRoy" alt="CRAN RStudio mirror downloads"></a></li>
 <li><a href="https://www.r-pkg.org/pkg/fitzRoy" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/grand-total/fitzRoy" alt="CRAN RStudio total downloads"></a></li>
 </ul>
@@ -248,7 +266,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
