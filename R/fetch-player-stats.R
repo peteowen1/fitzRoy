@@ -162,7 +162,7 @@ fetch_player_stats_afltables <- function(season = NULL, round_number = NULL, res
   }
 
   cli_id1 <- cli::cli_process_start("fetching cached data from {.url github.com}")
-  dat <- load_r_data(dat_url)
+  dat_old <- load_r_data(dat_url)
   cli::cli_process_done(cli_id1)
 
 
@@ -171,11 +171,12 @@ fetch_player_stats_afltables <- function(season = NULL, round_number = NULL, res
     if (is.null(rescrape_start_season)) rescrape_start_season <- format(start_date, "%Y")
     max_date <- lubridate::ymd(paste0(rescrape_start_season, "01-01"))
   } else {
-    max_date <- max(dat$Date)
+    max_date <- max(dat_old$Date)
   }
 
-  dat <- dat %>%
-    dplyr::filter(.data$Date <= max_date)
+  # return data
+  dat_old <- dat_old %>%
+    dplyr::filter(.data$Date > start_date & .data$Date < max_date)
 
   if (end_date > max_date) {
     urls <- get_afltables_urls(max_date, end_date)
@@ -183,24 +184,23 @@ fetch_player_stats_afltables <- function(season = NULL, round_number = NULL, res
       cli::cli_alert_info("New data found for {.val {length(urls)}} matches")
       dat_new <- scrape_afltables_match(urls)
 
-      dat <- list(dat, dat_new) %>%
+      dat <- list(dat_old, dat_new) %>%
         # Some DFs have numeric columns as 'chr' and some have them as 'dbl',
         # so we need to make them consistent before joining to avoid type errors
-        purrr::map(~ dplyr::mutate_at(., c("Jumper.No."), as.character)) %>%
+        purrr::map(~ dplyr::mutate_at(., c("Jumper.No."), as.integer)) %>%
+        purrr::map(~ dplyr::mutate_at(., c("Substitute"), as.character)) %>%
         dplyr::bind_rows(.)
     }
   } else {
+    dat <- dat_old
     cli::cli_alert_info("No new data found - returning cached data")
   }
   message("Finished getting afltables data")
-  # Fix for players who's spelling changes on afltables.com
+
+  # return data
   dat <- dat %>%
-    dplyr::group_by(.data$ID) %>%
-    dplyr::mutate(
-      First.name = dplyr::first(.data$First.name),
-      Surname = dplyr::first(.data$Surname)
-    )
-  
+    dplyr::filter(.data$Date > start_date & .data$Date < end_date)
+
   # fix for finals names being incorrect
   dat$Round[dat$Round == "Grand Final"] <- "GF"
   dat$Round[dat$Round == "Elimination Final"] <- "EF"
@@ -211,10 +211,6 @@ fetch_player_stats_afltables <- function(season = NULL, round_number = NULL, res
   # fix for trailing spaces in venues, causing duplicated venue names
   dat <- dat %>%
     dplyr::mutate(Venue = stringr::str_squish(.data$Venue))
-
-  # return data
-  dat <- dplyr::filter(dat, .data$Date > start_date & .data$Date < end_date) %>%
-    dplyr::ungroup()
 }
 
 

@@ -46,7 +46,7 @@ scrape_afltables_match <- function(match_urls) {
   }
   cli::cli_process_start("Scraping AFL Tables")
 
-  scraped_data <- purrr::map(match_urls, ~ scrape_afltables_data(.), .progress = TRUE)
+  scraped_data <- furrr::future_map(match_urls, ~ scrape_afltables_data(.), .progress = TRUE)
 
   cli::cli_process_done()
 
@@ -60,7 +60,7 @@ scrape_afltables_match <- function(match_urls) {
     purrr::map2(.y = away_games, ~ dplyr::bind_rows(.x, .y))
 
   att_lgl <- details %>%
-    purrr::map(~ stringr::str_detect(.x[2], "Attendance"))
+    purrr::map(~ stringr::str_detect(.x[1, 2], "Attendance"))
 
   att_fn <- function(x) {
     if (x) {
@@ -158,7 +158,16 @@ scrape_afltables_match <- function(match_urls) {
     dplyr::mutate_at(
       dplyr::vars(dplyr::starts_with("Umpire")),
       stringr::str_replace, " \\(.*\\)", ""
+    ) %>%
+    dplyr::mutate(
+      Substitute = dplyr::case_when(
+        stringr::str_detect(.data$Jumper.No., "\u2191") ~ "On",
+        stringr::str_detect(.data$Jumper.No., "\u2193") ~ "Off",
+        TRUE ~ NA_character_
+      ),
+      Jumper.No. = stringr::str_remove_all(.data$Jumper.No., "[\u2191\u2193]") %>% as.integer()
     )
+
 
   sep <- function(...) {
     dots <- list(...)
@@ -169,14 +178,16 @@ scrape_afltables_match <- function(match_urls) {
   }
 
   score_cols <- c("HQ1", "HQ2", "HQ3", "HQ4", "HQET", "AQ1", "AQ2", "AQ3", "AQ4", "AQET")
-  games_cleaned <- games_cleaned %>%
-    Reduce(f = sep, x = score_cols) %>%
-    dplyr::mutate_at(dplyr::vars(dplyr::contains("HQ")), as.integer) %>%
-    dplyr::mutate_at(dplyr::vars(dplyr::contains("AQ")), as.integer) %>%
-    dplyr::mutate(
-      Home.score = dplyr::coalesce(.data$HQETP, .data$HQ4P),
-      Away.score = dplyr::coalesce(.data$AQETP, .data$AQ4P)
-    )
+  games_cleaned <- suppressWarnings({
+    games_cleaned %>%
+      Reduce(f = sep, x = score_cols) %>%
+      dplyr::mutate_at(dplyr::vars(dplyr::contains("HQ")), as.integer) %>%
+      dplyr::mutate_at(dplyr::vars(dplyr::contains("AQ")), as.integer) %>%
+      dplyr::mutate(
+        Home.score = dplyr::coalesce(.data$HQETP, .data$HQ4P),
+        Away.score = dplyr::coalesce(.data$AQETP, .data$AQ4P)
+      )
+  })
 
   ids <- get_afltables_player_ids(min(games_cleaned$Season):max(games_cleaned$Season))
 
@@ -200,8 +211,12 @@ scrape_afltables_match <- function(match_urls) {
   #   dplyr::select(dplyr::one_of(afldata_cols))
 
   df <- df %>%
-    dplyr::mutate_if(is.numeric, ~ ifelse(is.na(.), 0, .)) %>%
+    dplyr::mutate(dplyr::across(
+      dplyr::where(is.numeric) & !dplyr::any_of(c("HQETG", "HQETB", "HQETP", "AQETG", "AQETB", "AQETP")),
+      ~ ifelse(is.na(.), 0, .)
+    )) %>%
     dplyr::mutate(Round = as.character(.data$Round))
+
 
   cli::cli_process_done()
 
