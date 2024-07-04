@@ -41,7 +41,6 @@ fetch_lineup <- function(season = NULL,
                          comp = "AFLM",
                          source = "AFL",
                          ...) {
-
   # Do some data checks
   season <- check_season(season)
   check_comp_source(comp, source)
@@ -58,7 +57,6 @@ fetch_lineup <- function(season = NULL,
 #' @rdname fetch_lineup
 #' @export
 fetch_lineup_afl <- function(season = NULL, round_number = NULL, comp = "AFLM") {
-
   # some data checks
   season <- check_season(season)
   if (is.null(round_number)) round_number <- ""
@@ -66,17 +64,17 @@ fetch_lineup_afl <- function(season = NULL, round_number = NULL, comp = "AFLM") 
   # Get match ids
   cli_id1 <- cli::cli_process_start("Fetching match ids")
   matches <- suppressMessages(fetch_fixture_afl(season, round_number, comp))
-  
+
   if (is.null(matches)) {
     rlang::warn(glue::glue("No matches data for season {season} on AFL.com.au for {comp}"))
     return(NULL)
   }
-  
+
   if (nrow(matches) == 0) {
     rlang::warn(glue::glue("No matches data for season {season} on AFL.com.au for {comp}"))
     return(NULL)
   }
-  
+
   ids <- matches$"providerId"
 
 
@@ -93,8 +91,10 @@ fetch_lineup_afl <- function(season = NULL, round_number = NULL, comp = "AFLM") 
   lineup_df <- purrr::map_dfr(ids, fetch_match_roster_afl, cookie)
   cli::cli_process_done(cli_id2)
 
-  if (length(lineup_df) == 0) return(NULL)
-     
+  if (length(lineup_df) == 0) {
+    return(NULL)
+  }
+
   # add match details
   match_details <- matches %>%
     dplyr::select(
