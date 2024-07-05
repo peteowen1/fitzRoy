@@ -207,8 +207,8 @@ Check the following url on footywire
 
   # Create round number
   games_df <- games_df %>%
-    dplyr::mutate(Round = as.integer(factor(.data$Round.Name,
-      levels = unique(games_df$Round.Name)
+    dplyr::mutate(
+      Round = as.integer(factor(.data$Round.Name,levels = unique(games_df$Round.Name)
     )))
 
   # Filter round if it's included
@@ -220,7 +220,8 @@ Check the following url on footywire
   # Fix names
   games_df <- games_df %>%
     dplyr::group_by(.data$Date, .data$Round, .data$Venue) %>%
-    tidyr::separate("Home v Away Teams",
+    tidyr::separate(
+      "Home v Away Teams",
       into = c("Home.Team", "Away.Team"),
       sep = "\\\nv\\s\\\n"
     ) %>%

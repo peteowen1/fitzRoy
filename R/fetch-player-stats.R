@@ -149,8 +149,13 @@ fetch_player_stats_afltables <- function(season = NULL, round_number = NULL, res
   start_date <- dates$start_date
   end_date <- dates$end_date
 
-  cli::cli_alert_info("Looking for data from {.val {start_date}} to {.val {end_date}}")
+  if (start_date > end_date) {
+    stop(cli::format_error(c(
+      "Cannot fetch player stats for {season} season"
+    )))
+  }
 
+  cli::cli_alert_info("Looking for data from {.val {start_date}} to {.val {end_date}}")
 
   # nolint start
   dat_url <- url("https://github.com/jimmyday12/fitzRoy_data/raw/main/data-raw/afl_tables_playerstats/afldata.rda")
@@ -178,23 +183,23 @@ fetch_player_stats_afltables <- function(season = NULL, round_number = NULL, res
   dat_old <- dat_old %>%
     dplyr::filter(.data$Date > start_date & .data$Date < max_date)
 
-  if (end_date > max_date) {
-    urls <- get_afltables_urls(max_date, end_date)
-    if (length(urls) != 0) {
-      cli::cli_alert_info("New data found for {.val {length(urls)}} matches")
-      dat_new <- scrape_afltables_match(urls)
+  urls <- get_afltables_urls(max_date, end_date)
 
-      dat <- list(dat_old, dat_new) %>%
-        # Some DFs have numeric columns as 'chr' and some have them as 'dbl',
-        # so we need to make them consistent before joining to avoid type errors
-        purrr::map(~ dplyr::mutate_at(., c("Jumper.No."), as.integer)) %>%
-        purrr::map(~ dplyr::mutate_at(., c("Substitute"), as.character)) %>%
-        dplyr::bind_rows(.)
-    }
+  if (length(urls) != 0) {
+    cli::cli_alert_info("New data found for {.val {length(urls)}} matches")
+    dat_new <- scrape_afltables_match(urls)
+
+    dat <- list(dat_old, dat_new) %>%
+      # Some DFs have numeric columns as 'chr' and some have them as 'dbl',
+      # so we need to make them consistent before joining to avoid type errors
+      purrr::map(~ dplyr::mutate_at(., c("Jumper.No."), as.integer)) %>%
+      purrr::map(~ dplyr::mutate_at(., c("Substitute"), as.character)) %>%
+      dplyr::bind_rows(.)
   } else {
     dat <- dat_old
     cli::cli_alert_info("No new data found - returning cached data")
   }
+
   message("Finished getting afltables data")
 
   # return data
@@ -337,7 +342,7 @@ fetch_player_stats_footywire <- function(season = NULL, round_number = NULL, che
     message("Downloading all data. Warning - this takes a long time")
     all_data_ids <- fw_ids
 
-    dat <- get_footywire_stats(all_data_ids)
+    dat <- fetch_footywire_stats(all_data_ids)
 
     dat <- dat %>%
       dplyr::filter(.data$Season >= min(season) & .data$Season <= max(season))
