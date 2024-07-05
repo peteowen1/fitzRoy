@@ -61,7 +61,7 @@ fetch_fixture <- function(season = NULL,
     NULL
   )
 
-  if (is.null(dat)) rlang::warn(glue::glue("The source \"{source}\" does not have Fixture data. Please use one of \"AFL\", \"footywire\" or \"squiggle\""))
+  if (is.null(dat)) cli::cli_warn("The source \"{source}\" does not have Fixture data. Please use one of \"AFL\", \"footywire\" or \"squiggle\"")
   return(dat)
 }
 
@@ -78,11 +78,11 @@ fetch_fixture_afl <- function(season = NULL, round_number = NULL, comp = "AFLM")
     rnd_msg <- paste0("Round ", round_number, ", ", season)
   }
 
-  cli_id <- cli::cli_process_start("Returning data for {.val {rnd_msg}}")
+  cli::cli_progress_step("Returning data for {.val {rnd_msg}}")
   comp_seas_id <- find_season_id(season, comp)
 
   if (is.null(comp_seas_id)) {
-    rlang::warn(glue::glue("No fixture data found for season {season} on AFL.com.au for {comp}"))
+    cli::cli_warn("No fixture data found for season {season} on AFL.com.au for {comp}")
     return(NULL)
   }
 
@@ -105,7 +105,6 @@ fetch_fixture_afl <- function(season = NULL, round_number = NULL, comp = "AFLM")
       httr::content(as = "text", encoding = "UTF-8") %>%
       jsonlite::fromJSON(flatten = TRUE)
 
-    cli::cli_process_done(cli_id)
     df <- dplyr::as_tibble(cont$matches)
   }
 
@@ -120,7 +119,6 @@ fetch_fixture_afl <- function(season = NULL, round_number = NULL, comp = "AFLM")
     dplyr::mutate(compSeason.year = as.numeric(gsub("^.*([0-9]{4}).*", "\\1", .data$compSeason.name))) %>%
     dplyr::filter(.data$compSeason.year == season)
 
-  # cli::cli_process_done(cli_id)
   return(df)
 }
 
@@ -263,14 +261,13 @@ fetch_fixture_squiggle <- function(season = NULL, round_number = NULL) {
   season <- check_season(season)
 
   if (is.null(round_number)) {
-    cli::cli_alert_info(
-      "No round specified - returning results for all rounds in {.val {season}}"
-    )
+    cli::cli_progress_step("No round specified - returning fixture for all rounds in season {.val {season}}")
     dat <- fetch_squiggle_data(
       query = "games",
       year = season
     )
   } else {
+    cli::cli_progress_step("Returning fixture for round {.val {round_number}} in season {.val {season}}")
     dat <- fetch_squiggle_data(
       query = "games",
       year = season,

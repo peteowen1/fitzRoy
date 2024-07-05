@@ -8,11 +8,17 @@
       i Please use `fetch_player_stats_afltables()` instead.
     Message
       i Looking for data from 1897-01-01 to 2019-12-31
-      i fetching cached data from <github.com>
-      v fetching cached data from <github.com> ... done
+      v Looking for data from 1897-01-01 to 2019-12-31 [5ms]
       
-      i No new data found - returning cached data
-      Finished getting afltables data
+      i Fetching cached data from <github.com/jimmyday12/fitzRoy_data>
+      v Fetching cached data from <github.com/jimmyday12/fitzRoy_data> [3s]
+      
+      i No new data found! Returning cached data
+      v No new data found! Returning cached data [7ms]
+      
+      i Tidying data
+      v Tidying data [2.3s]
+      
     Code
       expect_type(afltables_data, "list")
 
@@ -37,7 +43,7 @@
       i Please use `fetch_player_stats_fryzigg()` instead.
     Message
       i Returning cached AFLW data from 2017 and 2018
-      v Returning cached AFLW data from 2017 and 2018 ... done
+      v Returning cached AFLW data from 2017 and 2018 [1.7s]
       
     Code
       expect_type(x, "list")
@@ -52,8 +58,11 @@
       i Please use `fetch_footywire_stats()` instead.
     Message
       i Getting data from <https://www.footywire.com> for 1 match
-      Getting data from footywire for match id 5000
-      v Getting data from <https://www.footywire.com> for 1 match ... done
+      i Getting data from footywire for match id 5000
+      v Getting data from footywire for match id 5000 [4.5s]
+      
+      i Getting data from <https://www.footywire.com> for 1 match
+      v Getting data from <https://www.footywire.com> for 1 match [4.5s]
       
     Code
       expect_type(x, "list")
@@ -68,7 +77,7 @@
       i Please use `fetch_results_footywire()` instead.
     Message
       i Downloading 1 match from Footywire
-      v Downloading 1 match from Footywire ... done
+      v Downloading 1 match from Footywire [1.9s]
       
     Code
       expect_type(x, "list")
@@ -83,7 +92,7 @@
       i Please use `fetch_player_stats_fryzigg()` instead.
     Message
       i Returning cached AFLM data from 2020 and 2021
-      v Returning cached AFLM data from 2020 and 2021 ... done
+      v Returning cached AFLM data from 2020 and 2021 [6.6s]
       
     Code
       expect_type(x, "list")
@@ -109,7 +118,7 @@
       i Please use `fetch_fixture_afl()` instead.
     Message
       i Returning data for "Round 1, 2020"
-      v Returning data for "Round 1, 2020" ... done
+      v Returning data for "Round 1, 2020" [204ms]
       
     Code
       expect_type(x, "list")

@@ -18,8 +18,8 @@ team_check_footywire <- function(team) {
   valid <- team %in% valid_teams
 
   if (!valid) {
-    rlang::abort(glue::glue("{team} is not a valid input for footywire teams.
-                            Should be one of {glue::glue_collapse(valid_teams, sep = \", \")} "))
+    cli::cli_abort("{team} is not a valid input for footywire teams.
+                            Should be one of {glue::glue_collapse(valid_teams, sep = \", \")} ")
   }
 
   valid
@@ -168,11 +168,12 @@ footywire_html <- function(x, id) {
 #' @keywords internal
 #' @noRd
 get_match_data <- function(id) {
-  rlang::inform(glue::glue("Getting data from footywire for match id {id}"))
   # Create URL
   default_url <- "http://www.footywire.com/afl/footy/ft_match_statistics?mid="
   basic_url <- paste(default_url, id, sep = "")
   advanced_url <- paste(default_url, id, "&advv=Y", sep = "")
+
+  cli::cli_progress_step("Getting data from footywire for match id {id}")
 
   # Check if URL exists
   footywire_basic <- tryCatch(
@@ -459,7 +460,7 @@ fetch_footywire_stats <- function(ids) {
   # Now get data
   # First, only proceed if we've accessed the URL
   length_ids <- length(ids)
-  id <- cli::cli_process_start("Getting data from {.url https://www.footywire.com} for {.val {length_ids}} match{?es}")
+  cli::cli_progress_step("Getting data from {.url https://www.footywire.com} for {.val {length_ids}} match{?es}")
 
   # Loop through data using map
   dat <- ids %>%
@@ -471,7 +472,6 @@ fetch_footywire_stats <- function(ids) {
     dplyr::arrange(.data$Date, .data$Match_id, dplyr::desc(.data$Status))
 
   # Finish and return
-  cli::cli_process_done(id)
   return(dat)
 }
 

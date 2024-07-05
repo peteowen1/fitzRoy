@@ -9,6 +9,7 @@
 * Change way of fetching umpire names to avoid occasionally grabbing the wrong field from AFL tables
 * Fixes for players with incorrect AFL tables player ids - mainly due to player name changes.
 * Fixed an issue where `find_season_id` was only returning the last 10 seasons  ([#225](https://github.com/jimmyday12/fitzRoy/issues/225))
+* Updating some deprecated CLI messaging functions
 
 # fitzRoy 1.4.0
 

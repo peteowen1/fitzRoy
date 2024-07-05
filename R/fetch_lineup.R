@@ -50,7 +50,7 @@ fetch_lineup <- function(season = NULL,
     NULL
   )
 
-  if (is.null(dat)) rlang::warn(glue::glue("The source \"{source}\" does not have Lineup data. Please use \"AFL\""))
+  if (is.null(dat)) cli::cli_warn("The source \"{source}\" does not have Lineup data. Please use \"AFL\"")
   return(dat)
 }
 
@@ -62,16 +62,16 @@ fetch_lineup_afl <- function(season = NULL, round_number = NULL, comp = "AFLM") 
   if (is.null(round_number)) round_number <- ""
 
   # Get match ids
-  cli_id1 <- cli::cli_process_start("Fetching match ids")
+  cli::cli_progress_step("Fetching match ids")
   matches <- suppressMessages(fetch_fixture_afl(season, round_number, comp))
 
   if (is.null(matches)) {
-    rlang::warn(glue::glue("No matches data for season {season} on AFL.com.au for {comp}"))
+    cli::cli_warn("No matches data for season {season} on AFL.com.au for {comp}")
     return(NULL)
   }
 
   if (nrow(matches) == 0) {
-    rlang::warn(glue::glue("No matches data for season {season} on AFL.com.au for {comp}"))
+    cli::cli_warn("No matches data for season {season} on AFL.com.au for {comp}")
     return(NULL)
   }
 
@@ -82,14 +82,11 @@ fetch_lineup_afl <- function(season = NULL, round_number = NULL, comp = "AFLM") 
     return(NULL)
   }
 
-  cli::cli_process_done(cli_id1)
-
   # get cookie
   cookie <- get_afl_cookie()
   # Loop through each match
-  cli_id2 <- cli::cli_process_start("Checking lineups for {.emph {length(ids)}} match{?es}.")
+  cli::cli_progress_step("Checking lineups for {.emph {length(ids)}} match{?es}.", )
   lineup_df <- purrr::map_dfr(ids, fetch_match_roster_afl, cookie)
-  cli::cli_process_done(cli_id2)
 
   if (length(lineup_df) == 0) {
     return(NULL)
