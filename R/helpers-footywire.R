@@ -203,7 +203,7 @@ get_match_data <- function(id) {
       # Also merge with basic
       
       # Sleep for random amount of time between requests
-      Sys.sleep(runif(1, min = 0.2, max = 1))
+      Sys.sleep(0.5)
 
       # Check if Advanced URL exists
       footywire_advanced <- tryCatch(
