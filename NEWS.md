@@ -1,8 +1,22 @@
 # fitzRoy (development version)
 
+## Improvements
+
+* Added `fetch_awards()` function with support for three AFL awards:
+  - `brownlow` (player and team vote tallies from Footywire)
+  - `allaustralian` (final team and full squad)
+  - `risingstar` (nominations and round-level stats)
+  
+* Added a new wrapper function `fetch_team_stats()` for retrieving team-level statistics from multiple sources.
+* Improved code clarity and consistency with better error handling (`cli`), safer scoping (`.data$`), and modern `dplyr` syntax.
+* Enhanced compatibility with other functions by ensuring consistent team naming and structure in outputs.
+
+
 ## Bug Fixes
 
 * Fix duplicates for most recent game in `fetch_player_stats_afltables()` ([#250](https://github.com/jimmyday12/fitzRoy/issues/250))
+* Fix issues for `fetch_player_details` when indigenous names are used ([#262](https://github.com/jimmyday12/fitzRoy/issues/262)), ([#261](https://github.com/jimmyday12/fitzRoy/issues/261))
+* Addresses new afl.com.au spelling of *Wallitj Marawar* in `replace_teams()` ([#259](https://github.com/jimmyday12/fitzRoy/issues/259))
 
 # fitzRoy 1.6.0
 
