@@ -428,38 +428,49 @@ fetch_match_roster_afl <- function(id, cookie = NULL) {
 #' @noRd
 fetch_match_stats_afl <- function(id, cookie = NULL) {
   if (is.null(cookie)) cookie <- get_afl_cookie()
-
+  
   api <- httr::modify_url(
     url = "https://api.afl.com.au",
     path = paste0("/cfs/afl/playerStats/match/", id)
   )
-
+  
   resp <- httr::GET(
     url = api,
     httr::add_headers(
       "x-media-mis-token" = cookie
     )
   )
-
-  cont <- parse_resp_afl(resp)
-
+  
+  # 1. Catch any error (e.g. 404) and return NULL instead
+  cont <- tryCatch(
+    parse_resp_afl(resp),
+    error = function(e) {
+      message("parse_resp_afl failed: ", e$message)
+      return(NULL)
+    }
+  )
+  
+  # 2. If parsing failed, return an empty tibble right away
+  if (is.null(cont) | is.null(cont$homeTeamPlayerStats)) {
+    return(tibble::tibble())
+  }
+  
+  # 3. Otherwise proceed as before
   home_df <- cont$homeTeamPlayerStats %>%
-    dplyr::select(-"teamId", -"playerStats.lastUpdated") %>%
+    dplyr::select(-teamId, -"playerStats.lastUpdated") %>%
     clean_names_playerstats_afl() %>%
     tibble::as_tibble() %>%
     dplyr::mutate(teamStatus = "home")
-
+  
   away_df <- cont$awayTeamPlayerStats %>%
-    dplyr::select(-"teamId", -"playerStats.lastUpdated") %>%
+    dplyr::select(-teamId, -"playerStats.lastUpdated") %>%
     clean_names_playerstats_afl() %>%
     tibble::as_tibble() %>%
     dplyr::mutate(teamStatus = "away")
-
-
-  # return(home_df)
+  
   df <- dplyr::bind_rows(home_df, away_df) %>%
     dplyr::mutate(providerId = id)
-
+  
   return(df)
 }
 

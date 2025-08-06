@@ -55,7 +55,9 @@ Imports:
     cli,
     lifecycle,
     httr2,
-    janitor
+    janitor,
+    carrier,
+    mirai
 Suggests:
     covr,
     elo,

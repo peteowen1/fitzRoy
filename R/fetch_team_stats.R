@@ -79,8 +79,8 @@ fetch_team_stats_afltables <- function(season, summary_type = "totals") {
   
   team_stats_wide <- team_stats |>
     tidyr::pivot_wider(
-      names_from = .data$type,
-      values_from = -c(.data$Team, .data$type),
+      names_from = type,
+      values_from = -c(Team, type),
       names_sep = "_"
     )
   
@@ -95,14 +95,14 @@ fetch_team_stats_afltables <- function(season, summary_type = "totals") {
   
   team_stats_final <- dplyr::bind_cols(team_stats_wide, tibble::as_tibble(diff_list)) |>
     dplyr::mutate(season = season) |>
-    dplyr::relocate(.data$season, .before = .data$Team)
+    dplyr::relocate(season, .before = Team)
   
   if (summary_type == "averages") {
     results <- fitzRoy::fetch_results_afltables(season)
     
     game_counts <- results |>
       dplyr::filter(!is.na(.data$Home.Team), !is.na(.data$Away.Team)) |>
-      tidyr::pivot_longer(cols = c(.data$Home.Team, .data$Away.Team),
+      tidyr::pivot_longer(cols = c(Home.Team, Away.Team),
                           names_to = "HomeAway", values_to = "Team") |>
       dplyr::count(.data$Team, name = "Games")
     
@@ -113,7 +113,7 @@ fetch_team_stats_afltables <- function(season, summary_type = "totals") {
     team_stats_final <- dplyr::left_join(team_stats_final, game_counts, by = "Team")
     
     numeric_cols <- team_stats_final |>
-      dplyr::select(-.data$season, -.data$Team, -.data$Games) |>
+      dplyr::select(-season, -Team, -Games) |>
       dplyr::select(where(is.numeric)) |>
       names()
     
@@ -183,7 +183,7 @@ fetch_team_stats_footywire <- function(season,
   }
   
   purrr::map_dfr(summary_type, ~ fetch_single_type(season, .x)) |>
-    dplyr::relocate(.data$season, .data$summary, .data$type, .data$Team, .data$Games)
+    dplyr::relocate(season, summary, type, Team, Games)
 }
 
 #' Fetch VFLM/VFLW Team Stats from vflstats
@@ -262,5 +262,5 @@ fetch_team_stats_vflstats <- function(season = 2025,
       type = "team",
       comp = comp
     ) %>%
-    dplyr::relocate(.data$season, .data$summary, .data$type, .data$comp, .before = .data$Team)
+    dplyr::relocate(season, summary, type, comp, .before = Team)
 }

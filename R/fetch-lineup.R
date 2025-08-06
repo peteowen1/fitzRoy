@@ -86,7 +86,18 @@ fetch_lineup_afl <- function(season = NULL, round_number = NULL, comp = "AFLM") 
   cookie <- get_afl_cookie()
   # Loop through each match
   cli::cli_progress_step("Checking lineups for {.emph {length(ids)}} match{?es}.", )
-  lineup_df <- purrr::map_dfr(ids, fetch_match_roster_afl, cookie)
+
+  lineup_df <- purrr::map(
+    ids,
+    purrr::in_parallel(\(x){
+      fitzRoy:::fetch_match_roster_afl(x)}
+      #, fetch_match_roster_afl = fetch_match_roster_afl
+      )
+    ,
+    .progress = TRUE
+  ) %>%
+    purrr::list_rbind()
+
 
   if (length(lineup_df) == 0) {
     return(NULL)

@@ -91,11 +91,19 @@ fetch_player_stats_afl <- function(season = NULL, round_number = NULL, comp = "A
 
   # Loop through each match
   cli::cli_progress_step("Finding player stats for {.val {length(ids)}} match{?es}.")
-  match_stats <- ids %>%
-    purrr::map_dfr(purrr::possibly(~ fetch_match_stats_afl(.x, cookie),
-      otherwise = data.frame()
-    ))
 
+  match_stats <- purrr::map(
+    ids,
+    purrr::in_parallel(\(x){
+      fetch_match_stats_afl(x)},
+      fetch_match_stats_afl = fetch_match_stats_afl
+      )
+    ,
+    .progress = TRUE
+    ) %>%
+    purrr::list_rbind()
+  
+  
   if (nrow(match_stats) == 0) {
     cli::cli_inform("No completed matches found")
     return(NULL)
