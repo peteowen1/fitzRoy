@@ -369,8 +369,8 @@ fetch_match_roster_afl <- function(id, cookie = NULL) {
   api <- paste0("https://api.afl.com.au/cfs/afl/matchRoster/full/", id)
 
   # Use safe_afl_api_call with authentication header
-  tryCatch({
-    cont <- safe_afl_api_call(
+  cont <- tryCatch({
+    safe_afl_api_call(
       url = api,
       headers = list("x-media-mis-token" = cookie)
     )
@@ -382,6 +382,11 @@ fetch_match_roster_afl <- function(id, cookie = NULL) {
       stop(e)
     }
   })
+
+  # If we got an empty tibble from 404 error, return it
+  if (inherits(cont, "tbl_df") && nrow(cont) == 0) {
+    return(cont)
+  }
 
   # Check if matchRoster data is available
   if (is.null(cont$matchRoster)) {
