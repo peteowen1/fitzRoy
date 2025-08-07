@@ -38,7 +38,7 @@ Depends:
     R (>= 4.1)
 Imports:
     dplyr,
-    httr,
+    httr2,
     jsonlite,
     lubridate,
     magrittr,
@@ -53,8 +53,8 @@ Imports:
     tibble,
     glue,
     cli,
+    digest,
     lifecycle,
-    httr2,
     janitor,
     carrier,
     mirai

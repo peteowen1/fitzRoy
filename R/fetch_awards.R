@@ -71,11 +71,11 @@ fetch_awards_brownlow <- function(season, type = c("player", "team")) {
         Votes = 3 * .data$Votes_3 + 2 * .data$Votes_2 + 1 * .data$Votes_1,
         Season = !!season
       ) |>
-      dplyr::relocate(.data$Season) |>
+      dplyr::relocate(Season) |>
       dplyr::select(
-        .data$Season, .data$Player, .data$Team, .data$Votes, .data$Votes_3,
-        .data$Votes_2, .data$Votes_1, .data$Players_With_Votes, .data$Games_Polled,
-        Polled = .data$Polled, V_G = .data$`V/G`
+        Season, Player, Team, Votes, Votes_3,
+        Votes_2, Votes_1, Players_With_Votes, Games_Polled,
+        Polled = Polled, V_G = `V/G`
       )
     
   } else {
@@ -93,11 +93,11 @@ fetch_awards_brownlow <- function(season, type = c("player", "team")) {
         Votes = 3 * .data$Votes_3 + 2 * .data$Votes_2 + 1 * .data$Votes_1,
         Season = !!season
       ) |>
-      dplyr::relocate(.data$Season) |>
+      dplyr::relocate(Season) |>
       dplyr::select(
-        .data$Season, .data$Team, .data$Votes, .data$Votes_3,
-        .data$Votes_2, .data$Votes_1, .data$Players_With_Votes,
-        .data$Games_Polled, V_G = .data$`V/G`
+        Season, Team, Votes, Votes_3,
+        Votes_2, Votes_1, Players_With_Votes,
+        Games_Polled, V_G = `V/G`
       )
   }
   
@@ -203,7 +203,7 @@ fetch_rising_star <- function(season, round_number = NULL, type = c("nominations
         )
       ) |>
       dplyr::mutate(Season = season, Round = round_number) |>
-      dplyr::relocate(.data$Season, .data$Round)
+      dplyr::relocate(Season, Round)
   }
   
   if (type == "nominations") {
@@ -231,7 +231,7 @@ fetch_rising_star <- function(season, round_number = NULL, type = c("nominations
         )
       ) |>
       dplyr::mutate(Season = season) |>
-      dplyr::relocate(.data$Season, .data$Round)
+      dplyr::relocate(Season, Round)
     
   } else {
     if (is.null(round_number)) {

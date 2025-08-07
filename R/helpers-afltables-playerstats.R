@@ -632,5 +632,4 @@ get_afltables_player_ids <- function(seasons) {
   return(ids)
 }
 
-# silence global variable NOTES
-utils::globalVariables(names = c("dictionary_afltables", "mapping_afltables"))
+# Global variables are declared in FitzRoy-package.R

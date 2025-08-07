@@ -31,13 +31,13 @@
 #' fetch_fixture(2020, comp = "AFLW", source = "squiggle")
 #'
 #' # Different sources
-#' fetch_fixture(2015, round = 5, source = "footywire")
-#' fetch_fixture(2015, round = 5, source = "squiggle")
+#' fetch_fixture(2015, round_number = 5, source = "footywire")
+#' fetch_fixture(2015, round_number = 5, source = "squiggle")
 #'
 #' # Directly call functions for each source
-#' fetch_fixture_afl(2018, round = 9)
-#' fetch_fixture_footywire(2018, round = 9)
-#' fetch_fixture_squiggle(2018, round = 9)
+#' fetch_fixture_afl(2018, round_number = 9)
+#' fetch_fixture_footywire(2018, round_number = 9)
+#' fetch_fixture_squiggle(2018, round_number = 9)
 #' }
 #'
 #' @family fetch fixture functions
@@ -89,9 +89,10 @@ fetch_fixture_afl <- function(season = NULL, round_number = NULL, comp = "AFLM")
   comp_id <- find_comp_id(comp)
 
   match_request <- function(comp_seas_id, comp_id, round_number) {
-    # Make request
-    api <- "https://aflapi.afl.com.au//afl/v2/matches"
-    resp <- httr::GET(
+    # Make AFL API request with proper JSON flattening
+    api <- "https://aflapi.afl.com.au/afl/v2/matches"
+    
+    cont <- safe_afl_api_call(
       url = api,
       query = list(
         "competitionId" = comp_id,
@@ -101,10 +102,11 @@ fetch_fixture_afl <- function(season = NULL, round_number = NULL, comp = "AFLM")
       )
     )
 
-    cont <- resp %>%
-      httr::content(as = "text", encoding = "UTF-8") %>%
-      jsonlite::fromJSON(flatten = TRUE)
-
+    # Check if cont$matches is valid and handle empty or malformed data
+    if (is.null(cont$matches) || length(cont$matches) == 0) {
+      return(tibble::tibble())
+    }
+    
     df <- dplyr::as_tibble(cont$matches)
   }
 
@@ -129,18 +131,14 @@ fetch_fixture_afl <- function(season = NULL, round_number = NULL, comp = "AFLM")
 fetch_fixture_footywire <- function(season = NULL, round_number = NULL, convert_date = FALSE) {
   season <- check_season(season)
 
-  # Build request
-  req <- httr2::request("https://www.footywire.com/afl/footy/ft_match_list") |>
-    httr2::req_url_query("year" = season) |>
-    httr2::req_headers("User-Agent" = "fitzRoy")
-
-  # Make request
-  resp <- req |>
-    httr2::req_perform()
-
-  # Get HTML
-  html_resp <- resp |>
-    httr2::resp_body_html()
+  # Build the URL
+  url_fixture <- build_footywire_url(
+    path = "/afl/footy/ft_match_list",
+    params = list("year" = season)
+  )
+  
+  # Get HTML content using safe scraping
+  html_resp <- safe_read_html(url_fixture)
 
   # Get tables
   html_tables <- html_resp |>
@@ -160,10 +158,23 @@ Check the following url on footywire
   }
 
   # Extract the table we need
-  df <- html_tables |>
+  filtered_tables <- html_tables |>
     purrr::discard(function(x) nrow(x) < 100) |>
-    purrr::discard(function(x) ncol(x) > 8) |>
-    purrr::pluck(1)
+    purrr::discard(function(x) ncol(x) > 8)
+  
+  # Check if we have any tables left after filtering
+  if (length(filtered_tables) == 0) {
+    fitzroy_warn(paste("No suitable tables found on footywire for season", season), class = "scraping_warning")
+    return(tibble::tibble())
+  }
+  
+  df <- filtered_tables |> purrr::pluck(1)
+  
+  # Additional safety check
+  if (is.null(df) || nrow(df) == 0) {
+    fitzroy_warn(paste("Retrieved table from footywire is empty for season", season), class = "scraping_warning")
+    return(tibble::tibble())
+  }
 
   # Extract Round and Header data
   df <- df %>%
@@ -256,8 +267,19 @@ Check the following url on footywire
 #' @rdname fetch_fixture
 #' @export
 fetch_fixture_squiggle <- function(season = NULL, round_number = NULL) {
-  # check inputs
-  season <- check_season(season)
+  # check inputs - allow future seasons for Squiggle API (will return empty if no data)
+  tryCatch({
+    season <- check_season(season)
+  }, error = function(e) {
+    # If season validation fails, check if it's a future season issue
+    if (!is.null(season) && is.numeric(season) && season > LATEST_VALID_SEASON) {
+      cli::cli_progress_step("Season {season} is in the future - returning empty fixture")
+      return(tibble::tibble())
+    } else {
+      # Re-throw other validation errors
+      stop(e)
+    }
+  })
 
   if (is.null(round_number)) {
     cli::cli_progress_step("No round specified - returning fixture for all rounds in season {.val {season}}")

@@ -60,7 +60,8 @@ fetch_scores_by_type <- function(year, rounds, type = c("supercoach", "dream_tea
     cli::cli_abort("{.arg year} must be between 2010 and {current_year}. You supplied {.val {year}}.")
   }
   
-  all_rounds <- NULL
+  # Use list to collect data frames, then combine at the end for better performance
+  round_data <- list()
   
   for (round in rounds) {
     cli::cli_inform("Fetching {.val {type}} {.val {year}} Round {.val {round}} ...")
@@ -103,8 +104,14 @@ fetch_scores_by_type <- function(year, rounds, type = c("supercoach", "dream_tea
     df <- df[, c("year", "round", "rank", "player", "team",
                  "current_salary", "round_salary", "round_score", "round_value", "injured")]
     
-    all_rounds <- rbind(all_rounds, df)
+    # Store in list instead of rbind
+    round_data[[length(round_data) + 1]] <- df
   }
   
-  return(all_rounds)
+  # Combine all data frames at once for better performance
+  if (length(round_data) == 0) {
+    return(tibble::tibble())
+  }
+  
+  return(purrr::list_rbind(round_data))
 }

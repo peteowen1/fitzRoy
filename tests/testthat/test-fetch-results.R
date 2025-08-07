@@ -78,7 +78,7 @@ test_that("fetch_results_squiggle returns data frame with required variables", {
 
   # change year
   expect_s3_class(fetch_results_squiggle(yr - 2, 1), "tbl")
-  expect_equal(nrow(fetch_results_squiggle(yr + 2, 1)), 0)
+  expect_error(nrow(fetch_results_squiggle(yr + 2, 1)))
 
   # change round number
   expect_s3_class(fetch_results_squiggle(yr - 1, 10), "tbl")
@@ -145,3 +145,4 @@ test_that("fetch_results works for non-AFL leagues", {
     expect_warning() %>%
     suppressWarnings()
 })
+

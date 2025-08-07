@@ -33,23 +33,28 @@ fetch_squiggle_data <- function(query,
   )
 
   api_url <- "https://api.squiggle.com.au"
-
-  req <- httr2::request(api_url) |>
-    httr2::req_url_query(!!!params,
-      format = "JSON"
-    ) |>
-    httr2::req_user_agent(user_agent)
-
-  cli::cli_progress_step("Getting data from {.field {req$url}}")
-
-  resp <- req |>
-    httr2::req_perform()
-
-  cont_type <- resp |>
-    httr2::resp_content_type()
-
-
-  if (cont_type == "text/html") {
+  
+  # Add format parameter
+  params$format <- "JSON"
+  
+  # Make API call using safe_api_call
+  api_url_display <- build_squiggle_url(endpoint = "", params = list(q = params$q))
+  cli::cli_progress_step("Getting data from {.field {api_url_display}}")
+  
+  # Get raw response and parse with flatten=TRUE for consistency  
+  response <- safe_http_get(
+    url = api_url,
+    query = params,
+    headers = list("User-Agent" = user_agent)
+  )
+  
+  # Parse JSON with flatten=TRUE like other APIs
+  json_data <- response |>
+    httr2::resp_body_string() |>
+    jsonlite::fromJSON(flatten = TRUE)
+  
+  # Check if we got HTML instead of JSON (error condition)
+  if (is.character(json_data) && grepl("<!DOCTYPE html|<html", json_data)) {
     cli::cli_abort(c(
       "API did not return any data",
       "i" = "Did you check that the queries provided are valid?",
@@ -57,11 +62,25 @@ fetch_squiggle_data <- function(query,
     ))
   }
 
-  resp |>
-    httr2::resp_body_string() |>
-    jsonlite::fromJSON(flatten = TRUE) |>
-    purrr::pluck(1) |>
-    tibble::as_tibble()
+  # Convert to tibble - with flatten=TRUE, should have proper structure
+  if (is.list(json_data) && length(json_data) > 0) {
+    first_element <- json_data[[1]]
+    
+    if (is.null(first_element) || length(first_element) == 0) {
+      return(tibble::tibble())
+    }
+    
+    # With flattening, should be able to convert directly
+    tryCatch({
+      return(tibble::as_tibble(first_element))
+    }, error = function(e) {
+      # If still failing, provide more debugging info
+      fitzroy_warn(paste("Failed to convert Squiggle API response to tibble:", e$message), class = "api_parse_warning")
+      return(tibble::tibble())
+    })
+  } else {
+    return(tibble::tibble())
+  }
 }
 
 #' Access Squiggle data using the squiggle API service.

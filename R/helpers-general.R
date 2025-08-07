@@ -7,14 +7,7 @@
 #' @keywords internal
 #' @noRd
 check_season <- function(x = NULL) {
-  if (is.null(x)) {
-    x <- Sys.Date() %>%
-      format("%Y") %>%
-      as.numeric()
-  }
-  if (min(nchar(x)) < 4) cli::cli_abort("Season should be in YYYY format")
-  if (!is.numeric(x)) cli::cli_abort("Season should be numeric")
-  return(x)
+  return(validate_season(x))
 }
 
 #' Check comp
@@ -26,21 +19,11 @@ check_season <- function(x = NULL) {
 #' @keywords internal
 #' @noRd
 check_comp <- function(x) {
-  valid <- c(
-    "AFLM",
-    "AFLW",
-    "VFL",
-    "VFLM",
-    "VFLW",
-    "WAFL",
-    "U18B",
-    "U18G"
-  )
-
-  if (!x %in% valid) {
-    cli::cli_abort(
-      "`Comp` must be one of {glue::glue_collapse(valid, sep = \", \", last = \" or \")}
-    You provided the following: {x}"
+  if (!x %in% VALID_COMPETITIONS) {
+    fitzroy_abort(
+      "`Comp` must be one of {glue::glue_collapse(VALID_COMPETITIONS, sep = \", \", last = \" or \")}
+    You provided the following: {x}",
+      class = "invalid_comp"
     )
   } else {
     return(x)
@@ -56,19 +39,11 @@ check_comp <- function(x) {
 #' @keywords internal
 #' @noRd
 check_source <- function(x) {
-  valid <- c(
-    "AFL",
-    "footywire",
-    "afltables",
-    "squiggle",
-    "fryzigg",
-    "vflstats"
-  )
-
-  if (!x %in% valid) {
-    cli::cli_abort(
-      "`Source` must be one of {glue::glue_collapse(valid, sep = \", \", last = \" or \")}
-    You provided the following: {x}"
+  if (!x %in% VALID_SOURCES) {
+    fitzroy_abort(
+      "`Source` must be one of {glue::glue_collapse(VALID_SOURCES, sep = \", \", last = \" or \")}
+    You provided the following: {x}",
+      class = "invalid_source"
     )
   } else {
     return(x)
@@ -287,5 +262,4 @@ parse_team_abbr <- function(team_name) {
   )
 }
 
-# silence global variable NOTES
-utils::globalVariables(names = c("x", "y","round_mapping"))
+# Global variables are declared in FitzRoy-package.R

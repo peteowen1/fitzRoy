@@ -91,6 +91,7 @@ fetch_lineup_afl <- function(season = NULL, round_number = NULL, comp = "AFLM") 
     ids,
     purrr::in_parallel(\(x){
       fitzRoy:::fetch_match_roster_afl(x)}
+      # fetch_match_roster_afl(x)}
       #, fetch_match_roster_afl = fetch_match_roster_afl
       )
     ,

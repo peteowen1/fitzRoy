@@ -185,11 +185,11 @@ fetch_score_worm_data <- function(match_id) {
 #' @keywords internal
 #' @noRd
 get_match_score_worm <- function(url) {
-  headers <- c("x-media-mis-token" = get_afl_cookie())
+  headers <- list("x-media-mis-token" = get_afl_cookie())
 
-  res <- httr::GET(url = url, httr::add_headers(headers))
+  json_data <- safe_api_call(url, headers = headers)
 
-  match_info <- jsonlite::parse_json(httr::content(res, "text", encoding = "UTF-8"))
+  match_info <- json_data
 
   # match_info$score$scoreWorm$scoringEvents
   data <- match_info$score$scoreWorm$scoringEvents
@@ -416,5 +416,4 @@ team_colours <- function() {
   )
 }
 
-# silence global variable NOTES
-utils::globalVariables(names = c('periodNumber','periodSeconds'))
+# Global variables are declared in FitzRoy-package.R

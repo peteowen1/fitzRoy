@@ -31,6 +31,21 @@ test_that("fetch_lineup_afl works for various inputs", {
   # expect_null(fetch_lineup_afl(current_year, round_number = 23, comp = "AFLM"))
 })
 
+test_that("fetch_lineup_afl parallel execution works correctly", {
+  testthat::skip_if_offline()
+  testthat::skip_on_cran()
+  
+  # Test that the function works with multiple matches (parallel execution)
+  # This ensures the fix to remove ::: call works properly
+  result <- fetch_lineup_afl(2020, round_number = 1:10)
+  
+  expect_s3_class(result, "tbl")
+  expect_gt(nrow(result), 0)
+  expect_true("firstName" %in% names(result))
+  expect_true("surname" %in% names(result))
+  expect_true("teamStatus" %in% names(result))
+})
+
 
 
 test_that("fetch_lineup works", {

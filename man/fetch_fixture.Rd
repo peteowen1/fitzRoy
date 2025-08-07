@@ -69,13 +69,13 @@ fetch_fixture(2020, comp = "AFLW", source = "footywire")
 fetch_fixture(2020, comp = "AFLW", source = "squiggle")
 
 # Different sources
-fetch_fixture(2015, round = 5, source = "footywire")
-fetch_fixture(2015, round = 5, source = "squiggle")
+fetch_fixture(2015, round_number = 5, source = "footywire")
+fetch_fixture(2015, round_number = 5, source = "squiggle")
 
 # Directly call functions for each source
-fetch_fixture_afl(2018, round = 9)
-fetch_fixture_footywire(2018, round = 9)
-fetch_fixture_squiggle(2018, round = 9)
+fetch_fixture_afl(2018, round_number = 9)
+fetch_fixture_footywire(2018, round_number = 9)
+fetch_fixture_squiggle(2018, round_number = 9)
 }
 
 }

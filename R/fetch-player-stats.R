@@ -95,8 +95,9 @@ fetch_player_stats_afl <- function(season = NULL, round_number = NULL, comp = "A
   match_stats <- purrr::map(
     ids,
     purrr::in_parallel(\(x){
-      fetch_match_stats_afl(x)},
-      fetch_match_stats_afl = fetch_match_stats_afl
+      fitzRoy:::fetch_match_stats_afl(x)}
+      # fetch_match_stats_afl(x)}
+      #, fetch_match_stats_afl = fetch_match_stats_afl
       )
     ,
     .progress = TRUE

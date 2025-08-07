@@ -171,21 +171,30 @@ footywire_html <- function(x, id) {
 #' @keywords internal
 #' @noRd
 get_match_data <- function(id) {
-  # Create URL
-  default_url <- "http://www.footywire.com/afl/footy/ft_match_statistics?mid="
-  basic_url <- paste(default_url, id, sep = "")
-  advanced_url <- paste(default_url, id, "&advv=Y", sep = "")
+  # Validate and sanitize match ID
+  match_id <- validate_match_id(id)
+  
+  # Create URLs safely
+  basic_url <- build_footywire_url(
+    path = "/afl/footy/ft_match_statistics",
+    params = list(mid = match_id)
+  )
+  
+  advanced_url <- build_footywire_url(
+    path = "/afl/footy/ft_match_statistics", 
+    params = list(mid = match_id, advv = "Y")
+  )
 
   cli::cli_progress_step("Getting data from footywire for match id {id}")
 
-  # Check if URL exists
+  # Check if URL exists using safe HTML scraping
   footywire_basic <- tryCatch(
-    xml2::read_html(basic_url),
+    safe_read_html(basic_url),
     error = function(e) FALSE
   )
 
   if (!is.list(footywire_basic)) {
-    stop("Couldn't Find basic table")
+    fitzroy_abort("Couldn't Find basic table for match {match_id}", class = "scraping_error")
   } else {
     # Check if Advanced Page exist? If it doesn't, the script breaks
     # since the html tables have different nodes
@@ -197,7 +206,7 @@ get_match_data <- function(id) {
 
     # Check advanced exists
     if (advanced_empty) {
-      stop("This function only works on matches from 2010 onwards")
+      fitzroy_abort("This function only works on matches from 2010 onwards", class = "unsupported_match")
     } else {
       # If it does, grab the basic data
       player_stats_basic <- footywire_html(footywire_basic, id)
@@ -208,7 +217,7 @@ get_match_data <- function(id) {
 
       # Check if Advanced URL exists
       footywire_advanced <- tryCatch(
-        xml2::read_html(advanced_url),
+        safe_read_html(advanced_url),
         error = function(e) FALSE
       )
 
@@ -452,21 +461,21 @@ calculate_round_number <- function(round_names) {
 #' @keywords internal
 #' @noRd
 fetch_footywire_stats <- function(ids) {
-  if (missing(ids)) stop("Please provide an ID between 1 and 9999")
-  if (!is.numeric(ids)) stop("ID must be numeric between 1 and 9999")
-
-  # Initialise dataframe
-  dat <- as.data.frame(matrix(ncol = 42, nrow = 44))
+  # Validate inputs using new validation functions
+  if (missing(ids)) {
+    fitzroy_abort("Please provide an ID between 1 and 9999", class = "missing_input")
+  }
+  
+  # Validate each ID
+  ids <- purrr::map_dbl(ids, validate_match_id)
 
   # Now get data
-  # First, only proceed if we've accessed the URL
   length_ids <- length(ids)
   cli::cli_progress_step("Getting data from {.url https://www.footywire.com} for {.val {length_ids}} match{?es}")
 
-  # Loop through data using map
+  # Loop through data using map - no need to pre-allocate matrix
   dat <- ids %>%
-    purrr::map_df(~
-      get_match_data(id = .x))
+    purrr::map_df(~ get_match_data(id = .x), .progress = TRUE)
 
   # Rearrange
   dat <- dat %>%

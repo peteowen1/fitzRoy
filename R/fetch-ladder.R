@@ -118,18 +118,21 @@ fetch_ladder_afl <- function(season = NULL, round_number = NULL, comp = "AFLM") 
       "/ladders"
     ))
 
-  resp <- purrr::map(round_id, ~ httr::GET(api_url, query = list("roundId" = .x)), .progress = TRUE)
-
-  status_codes <- resp %>%
-    purrr::map_dbl(purrr::pluck, "status_code")
-
-  if (any(status_codes == 404) | any(status_codes == 400)) {
-    cli::cli_abort("No data found for specified round number and season. Does round number \"{round_number}\" exist for Season \"{season}\" on \"www.afl.com.au/ladder\"?")
-  }
-
-  cont <- resp %>%
-    purrr::map(httr::content, as = "text", encoding = "UTF-8") %>%
-    purrr::map(jsonlite::fromJSON, flatten = TRUE)
+  # Use safe_afl_api_call for each API request
+  cont <- purrr::map(round_id, ~ {
+    tryCatch({
+      safe_afl_api_call(
+        url = api_url,
+        query = list("roundId" = .x)
+      )
+    }, error = function(e) {
+      if (grepl("404|400", e$message)) {
+        cli::cli_abort("No data found for specified round number and season. Does round number \"{round_number}\" exist for Season \"{season}\" on \"www.afl.com.au/ladder\"?")
+      }
+      cli::cli_warn("Request failed for round_id {.x}: {e$message}")
+      return(NULL)
+    })
+  }, .progress = TRUE)
 
   ladder_list <- cont %>%
     purrr::map(purrr::pluck, "ladders", "entries")

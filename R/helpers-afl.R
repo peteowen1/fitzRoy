@@ -9,15 +9,13 @@ fetch_teams_afl <- function(comp) {
   team_api <- function(page) {
     api <- "https://aflapi.afl.com.au/afl/v2/teams"
 
-    resp <- httr::GET(
+    cont <- safe_afl_api_call(
       url = api,
       query = list(
         "pageSize" = "1000",
         page = page
       )
     )
-
-    cont <- parse_resp_afl(resp)
   }
 
   cont <- team_api(0)
@@ -239,13 +237,9 @@ team_abr_afl2 <- function(team, comp = "AFLM") {
 find_comp_id <- function(comp) {
   comp <- check_comp(comp)
 
-  api_url <- httr::modify_url("https://aflapi.afl.com.au",
-    path = "/afl/v2/competitions?pageSize=50"
-  )
+  api_url <- "https://aflapi.afl.com.au/afl/v2/competitions?pageSize=50"
 
-  resp <- httr::GET(api_url)
-
-  cont <- parse_resp_afl(resp)
+  cont <- safe_afl_api_call(api_url)
 
   cont$competitions <- cont$competitions %>%
     dplyr::filter(!stringr::str_detect(.data$name, "Legacy"))
@@ -270,8 +264,11 @@ find_comp_id <- function(comp) {
 #' }
 #' @export
 get_afl_cookie <- function() {
-  response <- httr::POST("https://api.afl.com.au/cfs/afl/WMCTok") # nolint
-  httr::content(response)$token
+  json_data <- safe_api_call(
+    url = "https://api.afl.com.au/cfs/afl/WMCTok",
+    method = "POST"
+  )
+  json_data$token
 }
 
 #' Find Season ID
@@ -288,13 +285,9 @@ find_season_id <- function(season, comp = "AFLM") {
 
   comp_id <- find_comp_id(comp)
 
-  api <- httr::modify_url("https://aflapi.afl.com.au",
-    path = paste0("/afl/v2/competitions/", comp_id, "/compseasons", "?pageSize=100")
-  )
+  api <- paste0("https://aflapi.afl.com.au/afl/v2/competitions/", comp_id, "/compseasons?pageSize=100")
 
-  resp <- httr::GET(api)
-
-  cont <- parse_resp_afl(resp)
+  cont <- safe_afl_api_call(api)
 
   comp_ids <- cont$compSeasons %>%
     dplyr::filter(!stringr::str_detect(.data$name, "Legacy")) %>%
@@ -336,19 +329,12 @@ find_round_id <- function(round_number,
 
   if (is.null(season_id)) season_id <- find_season_id(season, comp)
 
-  api <- httr::modify_url("https://aflapi.afl.com.au",
-    path = paste0(
-      "/afl/v2/compseasons/",
-      season_id,
-      "/rounds"
-    )
-  )
+  api <- paste0("https://aflapi.afl.com.au/afl/v2/compseasons/", season_id, "/rounds")
 
-  resp <- httr::GET(api,
+  cont <- safe_afl_api_call(
+    url = api,
     query = list(pageSize = 30)
   )
-
-  cont <- parse_resp_afl(resp)
 
   df <- cont$rounds
 
@@ -380,22 +366,27 @@ find_round_id <- function(round_number,
 fetch_match_roster_afl <- function(id, cookie = NULL) {
   if (is.null(cookie)) cookie <- get_afl_cookie()
 
-  api <- httr::modify_url("https://api.afl.com.au",
-    path = paste0("/cfs/afl/matchRoster/full/", id)
-  )
+  api <- paste0("https://api.afl.com.au/cfs/afl/matchRoster/full/", id)
 
-  resp <- httr::GET(
-    url = api,
-    httr::add_headers(
-      "x-media-mis-token" = cookie
+  # Use safe_afl_api_call with authentication header
+  tryCatch({
+    cont <- safe_afl_api_call(
+      url = api,
+      headers = list("x-media-mis-token" = cookie)
     )
-  )
+  }, error = function(e) {
+    if (grepl("404", e$message)) {
+      cli::cli_warn("No match found for match ID {.val {id}}. Returning empty tibble")
+      return(tibble::tibble())
+    } else {
+      stop(e)
+    }
+  })
 
-  if (httr::status_code(resp) == 404) {
-    cli::cli_warn("No match found for match ID {.val {id}}. Returning NULL")
-    return(NULL)
+  # Check if matchRoster data is available
+  if (is.null(cont$matchRoster)) {
+    return(tibble::tibble())
   }
-  cont <- parse_resp_afl(resp)
 
   cont$matchRoster$homeTeam$clubDebuts <- list()
   cont$matchRoster$homeTeam$milestones <- list()
@@ -429,26 +420,18 @@ fetch_match_roster_afl <- function(id, cookie = NULL) {
 fetch_match_stats_afl <- function(id, cookie = NULL) {
   if (is.null(cookie)) cookie <- get_afl_cookie()
   
-  api <- httr::modify_url(
-    url = "https://api.afl.com.au",
-    path = paste0("/cfs/afl/playerStats/match/", id)
-  )
-  
-  resp <- httr::GET(
-    url = api,
-    httr::add_headers(
-      "x-media-mis-token" = cookie
-    )
-  )
+  api <- paste0("https://api.afl.com.au/cfs/afl/playerStats/match/", id)
   
   # 1. Catch any error (e.g. 404) and return NULL instead
-  cont <- tryCatch(
-    parse_resp_afl(resp),
-    error = function(e) {
-      message("parse_resp_afl failed: ", e$message)
-      return(NULL)
-    }
-  )
+  cont <- tryCatch({
+    safe_afl_api_call(
+      url = api,
+      headers = list("x-media-mis-token" = cookie)
+    )
+  }, error = function(e) {
+    message("AFL API call failed: ", e$message)
+    return(NULL)
+  })
   
   # 2. If parsing failed, return an empty tibble right away
   if (is.null(cont) | is.null(cont$homeTeamPlayerStats)) {
@@ -497,16 +480,12 @@ clean_names_playerstats_afl <- function(x) {
 fetch_round_results_afl <- function(id, cookie = NULL) {
   if (is.null(cookie)) cookie <- get_afl_cookie()
 
-  url_api <- httr::modify_url("http://api.afl.com.au",
-    path = paste0("/cfs/afl/matchItems/round/", id)
-  )
+  url_api <- paste0("http://api.afl.com.au/cfs/afl/matchItems/round/", id)
 
-  resp <- httr::GET(
-    url_api,
-    httr::add_headers("x-media-mis-token" = cookie)
+  cont <- safe_afl_api_call(
+    url = url_api,
+    headers = list("x-media-mis-token" = cookie)
   )
-
-  cont <- parse_resp_afl(resp)
 
   df <- dplyr::as_tibble(cont$items)
 
@@ -534,21 +513,20 @@ fetch_round_results_afl <- function(id, cookie = NULL) {
 
 fetch_squad_afl <- function(teamId, team, season, compSeasonId) {
   cli::cli_progress_step("Fetching player details for {team}, {season}")
-  api <- "https://aflapi.afl.com.au//afl/v2/squads"
+  api <- "https://aflapi.afl.com.au/afl/v2/squads"
 
-  resp <- httr::GET(
-    url = api,
-    query = list(
-      "teamId" = teamId,
-      "compSeasonId" = compSeasonId,
-      "pageSize" = "1000"
+  cont <- tryCatch({
+    safe_afl_api_call(
+      url = api,
+      query = list(
+        "teamId" = teamId,
+        "compSeasonId" = compSeasonId,
+        "pageSize" = "1000"
+      )
     )
-  )
-
-  if (httr::http_error(resp)) {
+  }, error = function(e) {
     return(NULL)
-  }
-  cont <- parse_resp_afl(resp)
+  })
 
   df <- dplyr::as_tibble(cont$squad$players)
 
@@ -575,18 +553,24 @@ fetch_squad_afl <- function(teamId, team, season, compSeasonId) {
 #' @keywords internal
 #' @noRd
 parse_resp_afl <- function(resp) {
-  if (httr::http_type(resp) != "application/json") {
+  # Updated to work with httr2 responses
+  if (!httr2::resp_has_body(resp)) {
+    cli::cli_abort("API response has no body")
+  }
+  
+  content_type <- httr2::resp_content_type(resp)
+  if (!grepl("application/json", content_type)) {
     cli::cli_abort("API did not return json")
   }
 
   parsed <- resp %>%
-    httr::content(as = "text", encoding = "UTF-8") %>%
+    httr2::resp_body_string() %>%
     jsonlite::fromJSON(flatten = TRUE)
 
-  if (httr::http_error(resp)) {
+  if (httr2::resp_is_error(resp)) {
     cli::cli_abort(
-      "GitHub API request failed
-        {httr::status_code(resp)} - {parsed$techMessage}"
+      "AFL API request failed
+        {httr2::resp_status(resp)} - {parsed$techMessage}"
     )
   }
   return(parsed)

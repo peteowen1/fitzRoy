@@ -47,20 +47,21 @@ get_aflw_rounds <- function(cookie) {
       "http://api.afl.com.au/cfs/afl/season?seasonId=CD_S",
       years[[i]], "264"
     )
-    match_data_json <- httr::GET(
-      meta_url,
-      httr::add_headers(`X-media-mis-token` = cookie)
-    )
-    response_code <- match_data_json$status_code
-    # Status code should be 200 unless year missing
-    if (response_code != 200) {
+    # Use safe_afl_api_call with error handling
+    season_data <- tryCatch({
+      safe_afl_api_call(
+        url = meta_url,
+        headers = list("X-media-mis-token" = cookie)
+      )
+    }, error = function(e) {
+      return(NULL)
+    })
+    
+    # Check if data was retrieved successfully
+    if (is.null(season_data)) {
       continue <- FALSE
     } else {
-      x <- httr::content(match_data_json,
-        as = "text",
-        encoding = "UTF-8"
-      ) %>%
-        jsonlite::fromJSON() %>%
+      x <- season_data %>%
         .$season %>%
         .$competitions %>%
         dplyr::as_tibble() %>%
@@ -98,13 +99,10 @@ get_aflw_round_data <- function(roundid, cookie) {
   )
 
   # Extract round data JSON and flatten into data frame
-  round_data <- httr::GET(
-    url_head,
-    httr::add_headers(`X-media-mis-token` = cookie)
-  ) %>%
-    httr::content(as = "text", encoding = "UTF-8") %>%
-    jsonlite::fromJSON(flatten = TRUE) %>%
-    .$items %>%
+  round_data <- safe_afl_api_call(
+    url = url_head,
+    headers = list("X-media-mis-token" = cookie)
+  )$items %>%
     # Select data from flattened JSON file
     dplyr::as_tibble()
 
@@ -273,15 +271,19 @@ get_aflw_detailed_data <- function(matchids) {
 get_aflw_detailed_match_data <- function(matchid, roundid, competitionid,
                                          cookie) {
   url <- "http://api.afl.com.au/cfs/afl/statsCentre/teams"
-  request_metadata <- httr::GET(url,
+  
+  # Get raw response to check for "Page Not Found"
+  response <- safe_http_get(
+    url = url,
     query = list(
       matchId = matchid,
       roundId = roundid,
       competitionId = competitionid
     ),
-    httr::add_headers(`X-media-mis-token` = cookie)
-  ) %>%
-    httr::content(as = "text", encoding = "UTF-8")
+    headers = list("X-media-mis-token" = cookie)
+  )
+  
+  request_metadata <- httr2::resp_body_string(response)
 
   # Check that round info is available on web, if not return error
   if (stringr::str_detect(request_metadata, "Page Not Found")) {
